@@ -153,23 +153,21 @@ ${input.replace(url, "").trim()}
       }),
     });
 
-   const data = await response.json();
+const data = await response.json();
 
-console.log("OPENAI STATUS:", response.status);
-console.log("OPENAI DATA:", JSON.stringify(data, null, 2));
+console.log("========== OPENAI ==========");
+console.log("Status :", response.status);
+console.log(JSON.stringify(data, null, 2));
 
 if (!response.ok) {
-  return NextResponse.json(
-    {
-      error: "Erreur OpenAI",
-      details: data,
-    },
-    { status: response.status }
-  );
+  return NextResponse.json({
+    output: "Erreur OpenAI",
+    details: data,
+  });
 }
 
 return NextResponse.json({
-  output: data.choices?.[0]?.message?.content || "Pas de réponse.",
+  output: data.choices[0].message.content,
   usage: data.usage,
 });
   } catch (error) {
