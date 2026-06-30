@@ -153,11 +153,25 @@ ${input.replace(url, "").trim()}
       }),
     });
 
-    const data = await response.json();
+   const data = await response.json();
 
-    return NextResponse.json({
-      output: data.choices?.[0]?.message?.content || "Pas de réponse.",
-    });
+console.log("OPENAI STATUS:", response.status);
+console.log("OPENAI DATA:", JSON.stringify(data, null, 2));
+
+if (!response.ok) {
+  return NextResponse.json(
+    {
+      error: "Erreur OpenAI",
+      details: data,
+    },
+    { status: response.status }
+  );
+}
+
+return NextResponse.json({
+  output: data.choices?.[0]?.message?.content || "Pas de réponse.",
+  usage: data.usage,
+});
   } catch (error) {
     console.error("❌ Erreur serveur :", error);
     return NextResponse.json(
