@@ -1,36 +1,211 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Analytics Intelligence Platform (AIP)
 
-## Getting Started
+> **AI-powered Digital Analytics Auditor**
 
-First, run the development server:
+Analytics Intelligence Platform est une application SaaS développée en **Next.js** qui permet de réaliser un premier audit Digital Analytics à partir d'une simple URL.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+L'objectif est d'automatiser le travail de pré-audit d'un consultant Analytics en détectant les technologies de tracking présentes sur un site et en générant un rapport intelligent assisté par IA.
+
+---
+
+# 🌍 Démonstration
+
+## Application
+
+👉 https://agent-ia-lilac.vercel.app/
+
+---
+
+# 🎯 Objectif
+
+Réduire le temps nécessaire à un consultant Digital Analytics pour :
+
+- identifier les solutions Analytics installées
+- détecter les technologies de tracking
+- produire un premier audit
+- générer des recommandations
+- préparer un plan de taggage
+
+---
+
+# ✨ Fonctionnalités V1
+
+✅ Analyse d'une URL
+
+✅ Récupération du HTML
+
+✅ Détection automatique de :
+
+- Google Tag Manager
+- Google Analytics 4
+- Adobe Analytics
+- Piano Analytics
+- Eulerian Analytics
+
+✅ Génération d'un audit via OpenAI
+
+✅ Déploiement sur Vercel
+
+---
+
+# 🛠️ Technologies
+
+- Next.js 16
+- TypeScript
+- OpenAI API
+- Vercel
+- GitHub
+
+---
+
+# 📂 Architecture actuelle
+
+```
+app
+│
+├── api
+│     └── agent
+│
+├── prompts
+│
+├── page.tsx
+│
+└── layout.tsx
+
+lib
+│
+├── analytics-detector.ts
+├── html-fetcher.ts
+└── types.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# 🚀 Roadmap
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✅ Version 1
 
-## Learn More
+- Interface utilisateur
+- OpenAI
+- Analyse HTML
+- Détection Analytics
+- Déploiement
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚧 Version 2 (en cours)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Architecture modulaire
 
-## Deploy on Vercel
+Moteur de détection indépendant
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+JSON structuré
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Détecteurs spécialisés :
+
+- Google Tag Manager
+- Google Analytics 4
+- Adobe Analytics
+- Piano Analytics
+- Eulerian Analytics
+
+---
+
+## 🔜 Version 3
+
+Détection :
+
+- Consent Mode v2
+- Didomi
+- OneTrust
+- Axeptio
+- Cookiebot
+
+Pixels :
+
+- Meta Pixel
+- TikTok Pixel
+- LinkedIn Insight
+- Floodlight
+- Snap Pixel
+
+Analyse :
+
+- DataLayer
+- Events
+- Variables
+- KPIs
+
+---
+
+## 🔥 Version 4
+
+Playwright
+
+Analyse JavaScript Runtime
+
+Cookies
+
+Network
+
+Requêtes Analytics
+
+---
+
+## ⭐ Version 5
+
+Analytics Maturity Score
+
+Recommandations
+
+Rapport PDF
+
+Export PowerPoint
+
+Historique des audits
+
+---
+
+# 📈 Vision
+
+À terme, Analytics Intelligence Platform permettra à un consultant de saisir simplement :
+
+```
+https://www.client.com
+```
+
+et d'obtenir automatiquement :
+
+- ✅ Technologies Analytics détectées
+- ✅ Measurement IDs
+- ✅ GTM Container
+- ✅ Consent Mode
+- ✅ Pixels Marketing
+- ✅ DataLayer
+- ✅ KPIs recommandés
+- ✅ Plan de taggage
+- ✅ Rapport PDF professionnel
+
+---
+
+# 💡 Pourquoi ce projet ?
+
+Lors des missions de conseil Digital Analytics, les phases de pré-audit sont souvent longues et répétitives.
+
+L'objectif de ce projet est d'utiliser l'IA pour automatiser ces tâches tout en conservant une approche fiable, basée sur des preuves techniques observables.
+
+---
+
+# 👨‍💻 Auteur
+
+**Brice Goye**
+
+Digital Analytics Consultant
+
+Projet personnel en cours de développement.
+
+---
+
+# 📄 Licence
+
+MIT
