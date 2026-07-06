@@ -5,9 +5,23 @@ export type DetectionStatus =
   | "Possiblement chargé via GTM"
   | "Non détecté";
 
+export type ToolCategory =
+  | "Analytics"
+  | "Tag Management"
+  | "Consent"
+  | "Advertising"
+  | "UX Analytics"
+  | "A/B Testing"
+  | "DataLayer"
+  | "Other";
+
 export type AnalyticsToolDetection = {
   name: string;
   key: string;
+  vendor: string;
+  category: ToolCategory;
+  documentationUrl: string;
+  description: string;
   present: boolean;
   status: DetectionStatus;
   ids: string[];

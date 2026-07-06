@@ -20,13 +20,18 @@ export function detectGA4(html: string): AnalyticsToolDetection {
   const present = evidence.length > 0;
 
   return {
-    name: "Google Analytics 4",
-    key: "ga4",
-    present,
-    status: present ? "Détecté directement" : "Non détecté",
-    ids: ga4Ids,
-    evidence,
-    sources: present ? ["HTML statique", "Script inline", "Script externe"] : [],
-    certainty: ga4Ids.length > 0 ? "Élevé" : present ? "Moyen" : "Faible",
-  };
+  name: "Google Analytics 4",
+  key: "ga4",
+  vendor: "Google",
+  category: "Analytics",
+  documentationUrl: "https://support.google.com/analytics",
+  description:
+    "Google Analytics 4 est la solution de mesure d'audience de Google permettant d'analyser les interactions utilisateurs sur un site ou une application.",
+  present,
+  status: present ? "Détecté directement" : "Non détecté",
+  ids: ga4Ids,
+  evidence,
+  sources: present ? ["HTML statique", "Script inline", "Script externe"] : [],
+  certainty: ga4Ids.length > 0 ? "Élevé" : present ? "Moyen" : "Faible",
+};
 }

@@ -18,14 +18,19 @@ export function detectGTM(html: string): AnalyticsToolDetection {
 
   const present = evidence.length > 0;
 
-  return {
-    name: "Google Tag Manager",
-    key: "gtm",
-    present,
-    status: present ? "Détecté directement" : "Non détecté",
-    ids: gtmIds,
-    evidence,
-    sources: present ? ["HTML statique", "Script externe"] : [],
-    certainty: gtmIds.length > 0 ? "Élevé" : present ? "Moyen" : "Faible",
-  };
+ return {
+  name: "Google Tag Manager",
+  key: "gtm",
+  vendor: "Google",
+  category: "Tag Management",
+  documentationUrl: "https://support.google.com/tagmanager",
+  description:
+    "Google Tag Manager permet de gérer et déployer des balises marketing et analytics sans modifier directement le code source du site.",
+  present,
+  status: present ? "Détecté directement" : "Non détecté",
+  ids: gtmIds,
+  evidence,
+  sources: present ? ["HTML statique", "Script externe"] : [],
+  certainty: gtmIds.length > 0 ? "Élevé" : present ? "Moyen" : "Faible",
+};
 }
