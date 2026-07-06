@@ -196,6 +196,7 @@ L'objectif de ce projet est d'utiliser l'IA pour automatiser ces tâches tout en
 
 ---
 
+
 # 👨‍💻 Auteur
 
 **Brice Goye**
