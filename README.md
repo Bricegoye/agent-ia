@@ -1,40 +1,70 @@
 # 🚀 Analytics Intelligence Platform (AIP)
 
-> **AI-powered Digital Analytics Auditor**
+> **Plateforme d'audit Digital Analytics assistée par Intelligence Artificielle**
 
-Analytics Intelligence Platform est une application SaaS développée en **Next.js** qui permet de réaliser un premier audit Digital Analytics à partir d'une simple URL.
+## 🌍 Démonstration
 
-L'objectif est d'automatiser le travail de pré-audit d'un consultant Analytics en détectant les technologies de tracking présentes sur un site et en générant un rapport intelligent assisté par IA.
-
----
-
-# 🌍 Démonstration
-
-## Application
+**Application en ligne**
 
 👉 https://agent-ia-lilac.vercel.app/
 
 ---
 
-# 🎯 Objectif
+# 📖 Présentation
 
-Réduire le temps nécessaire à un consultant Digital Analytics pour :
+Analytics Intelligence Platform (AIP) est un projet personnel développé dans le but d'automatiser les premières phases d'un audit Digital Analytics.
 
-- identifier les solutions Analytics installées
-- détecter les technologies de tracking
-- produire un premier audit
-- générer des recommandations
-- préparer un plan de taggage
+À partir d'une simple URL, la plateforme analyse un site web afin de détecter les principales technologies Analytics et Marketing, puis utilise l'Intelligence Artificielle pour produire un premier rapport d'audit destiné aux consultants.
+
+L'objectif est de réduire le temps consacré aux pré-audits techniques tout en proposant une analyse fiable et structurée.
 
 ---
 
-# ✨ Fonctionnalités V1
+# 🎯 Objectifs
 
-✅ Analyse d'une URL
+L'application permet de :
 
-✅ Récupération du HTML
+- Analyser une URL
+- Détecter les solutions Analytics installées
+- Identifier les technologies de tracking
+- Générer un premier audit
+- Proposer des KPIs adaptés
+- Préparer un plan de taggage
+- Faciliter le travail des consultants Digital Analytics
 
-✅ Détection automatique de :
+---
+
+# ✅ Fonctionnalités disponibles (Version 1)
+
+- Analyse d'une URL
+- Récupération du HTML d'une page
+- Détection initiale de :
+  - Google Tag Manager
+  - Google Analytics 4
+  - Adobe Analytics
+  - Piano Analytics
+  - Eulerian Analytics
+- Génération d'un rapport via OpenAI
+- Déploiement sur Vercel
+
+---
+
+# 🚧 Développement de la Version 2
+
+La Version 2 introduit une architecture beaucoup plus robuste reposant sur un véritable moteur de détection Analytics.
+
+Travaux en cours :
+
+- Architecture modulaire TypeScript
+- Moteur de détection indépendant
+- Détection structurée des technologies
+- Préparation d'un JSON d'analyse avant l'appel à l'IA
+
+---
+
+# 🔍 Technologies détectées
+
+## Analytics
 
 - Google Tag Manager
 - Google Analytics 4
@@ -42,157 +72,129 @@ Réduire le temps nécessaire à un consultant Digital Analytics pour :
 - Piano Analytics
 - Eulerian Analytics
 
-✅ Génération d'un audit via OpenAI
+## Marketing
 
-✅ Déploiement sur Vercel
+- Meta Pixel *(à venir)*
+- LinkedIn Insight *(à venir)*
+- TikTok Pixel *(à venir)*
+- Floodlight *(à venir)*
+
+## Consentement
+
+- Consent Mode v2 *(à venir)*
+- Didomi *(à venir)*
+- OneTrust *(à venir)*
+- Axeptio *(à venir)*
+- Cookiebot *(à venir)*
 
 ---
 
-# 🛠️ Technologies
+# 🛠️ Stack technique
 
-- Next.js 16
+- Next.js
 - TypeScript
 - OpenAI API
+- Git / GitHub
 - Vercel
-- GitHub
 
 ---
 
-# 📂 Architecture actuelle
+# 🏗️ Architecture
 
-```
-app
-│
-├── api
-│     └── agent
-│
-├── prompts
-│
-├── page.tsx
-│
-└── layout.tsx
+```text
+URL
 
-lib
-│
-├── analytics-detector.ts
-├── html-fetcher.ts
-└── types.ts
-```
+↓
 
----
+Récupération du HTML
 
-# 🚀 Roadmap
+↓
 
-## ✅ Version 1
+Moteur de détection Analytics
 
-- Interface utilisateur
-- OpenAI
-- Analyse HTML
-- Détection Analytics
-- Déploiement
-
----
-
-## 🚧 Version 2 (en cours)
-
-Architecture modulaire
-
-Moteur de détection indépendant
+↓
 
 JSON structuré
 
-Détecteurs spécialisés :
+↓
 
-- Google Tag Manager
-- Google Analytics 4
-- Adobe Analytics
-- Piano Analytics
-- Eulerian Analytics
+Intelligence Artificielle
+
+↓
+
+Rapport d'audit
+```
 
 ---
 
-## 🔜 Version 3
+# 🗺️ Roadmap
 
-Détection :
+## ✅ V1
 
-- Consent Mode v2
-- Didomi
-- OneTrust
-- Axeptio
-- Cookiebot
+- Interface utilisateur
+- Intégration OpenAI
+- Analyse HTML
+- Premier audit Analytics
+- Déploiement Vercel
 
-Pixels :
+---
 
-- Meta Pixel
-- TikTok Pixel
-- LinkedIn Insight
-- Floodlight
-- Snap Pixel
+## 🚧 V2
 
-Analyse :
+- Détecteurs indépendants
+- Architecture modulaire
+- JSON structuré
+- Analyse enrichie
 
+---
+
+## 🔜 V3
+
+- Consent Mode
+- CMP
+- Pixels Marketing
 - DataLayer
-- Events
-- Variables
-- KPIs
+- KPIs avancés
 
 ---
 
-## 🔥 Version 4
+## 🔥 V4
 
-Playwright
-
-Analyse JavaScript Runtime
-
-Cookies
-
-Network
-
-Requêtes Analytics
+- Analyse JavaScript avec Playwright
+- Analyse des requêtes réseau
+- Analyse des cookies
+- Détection dynamique des tags
 
 ---
 
-## ⭐ Version 5
+## ⭐ V5
 
-Analytics Maturity Score
-
-Recommandations
-
-Rapport PDF
-
-Export PowerPoint
-
-Historique des audits
+- Score de maturité Analytics
+- Génération PDF
+- Historique des audits
+- Fonctionnalités SaaS
 
 ---
 
-# 📈 Vision
+# 🎯 Vision du projet
 
 À terme, Analytics Intelligence Platform permettra à un consultant de saisir simplement :
 
-```
+```text
 https://www.client.com
 ```
 
 et d'obtenir automatiquement :
 
-- ✅ Technologies Analytics détectées
-- ✅ Measurement IDs
-- ✅ GTM Container
-- ✅ Consent Mode
-- ✅ Pixels Marketing
-- ✅ DataLayer
-- ✅ KPIs recommandés
-- ✅ Plan de taggage
-- ✅ Rapport PDF professionnel
-
----
-
-# 💡 Pourquoi ce projet ?
-
-Lors des missions de conseil Digital Analytics, les phases de pré-audit sont souvent longues et répétitives.
-
-L'objectif de ce projet est d'utiliser l'IA pour automatiser ces tâches tout en conservant une approche fiable, basée sur des preuves techniques observables.
+- Technologies Analytics détectées
+- Measurement IDs
+- GTM Container IDs
+- Analyse du Consent Mode
+- Pixels Marketing
+- Analyse du DataLayer
+- KPIs recommandés
+- Plan de taggage
+- Rapport PDF professionnel
 
 ---
 
@@ -200,12 +202,12 @@ L'objectif de ce projet est d'utiliser l'IA pour automatiser ces tâches tout en
 
 **Brice Goye**
 
-Digital Analytics Consultant
+Consultant Digital Analytics
 
-Projet personnel en cours de développement.
+Projet personnel développé dans le cadre d'une démarche d'innovation autour du Digital Analytics et de l'Intelligence Artificielle.
 
 ---
 
-# 📄 Licence
+# 📌 Statut
 
-MIT
+🚧 Projet en cours de développement.
