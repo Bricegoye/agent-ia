@@ -1,5 +1,6 @@
 import type { AnalyticsDetectionResult } from "./types";
 import { runDetectors } from "./detectors";
+import { generateInsights } from "./insights-engine";
 
 function unique(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))];
@@ -30,7 +31,7 @@ export function detectAnalyticsTools(params: {
 
   const tools = runDetectors(html);
 
-  return {
+  const result: AnalyticsDetectionResult = {
     url,
     fetchedAt: new Date().toISOString(),
     htmlSize,
@@ -40,5 +41,10 @@ export function detectAnalyticsTools(params: {
       headSnippet,
       inlineScriptSnippet,
     },
+  };
+
+  return {
+    ...result,
+    insights: generateInsights(result),
   };
 }

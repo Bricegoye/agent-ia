@@ -1,5 +1,16 @@
 export type CertaintyLevel = "Élevé" | "Moyen" | "Faible";
 
+
+export type InsightSeverity = "info" | "warning" | "success" | "critical";
+
+export type AnalyticsInsight = {
+  key: string;
+  severity: InsightSeverity;
+  title: string;
+  description: string;
+  relatedTools: string[];
+};
+
 export type DetectionStatus =
   | "Détecté directement"
   | "Possiblement chargé via GTM"
@@ -28,6 +39,9 @@ export type AnalyticsToolDetection = {
   evidence: string[];
   sources: string[];
   certainty: CertaintyLevel;
+
+  // Informations spécifiques à chaque technologie
+  details?: Record<string, unknown>;
 };
 
 export type AnalyticsDetectionResult = {
@@ -35,6 +49,7 @@ export type AnalyticsDetectionResult = {
   fetchedAt: string;
   htmlSize: number;
   tools: AnalyticsToolDetection[];
+  insights?: AnalyticsInsight[];
   rawSignals: {
     scriptSrcs: string[];
     headSnippet: string;
