@@ -1,6 +1,8 @@
 import type { AnalyticsToolDetection } from "../types";
 import { detectGTM } from "./gtm-detector";
 import { detectGA4 } from "./ga4-detector";
+import { detectConsent } from "./consent-detector";
+import { detectDataLayer } from "./datalayer-detector";
 
 export type Detector = {
   key: string;
@@ -15,10 +17,21 @@ export const detectors: Detector[] = [
     detect: detectGTM,
   },
   {
+  key: "datalayer",
+  name: "Google DataLayer",
+  detect: detectDataLayer,
+},
+  {
     key: "ga4",
     name: "Google Analytics 4",
     detect: detectGA4,
   },
+  {
+  key: "consent",
+  name: "Consent Management Platform",
+  detect: detectConsent,
+},
+
 ];
 
 export function runDetectors(html: string): AnalyticsToolDetection[] {
