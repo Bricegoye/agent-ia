@@ -5,6 +5,7 @@ import { detectGA4 } from "./ga4-detector";
 import { detectConsent } from "./consent-detector";
 import { detectDataLayer } from "./datalayer-detector";
 import { detectAdobeLaunch } from "./adobe-launch-detector";
+import { detectAdobeAnalytics } from "./adobe-analytics-detector";
 
 type Detector = {
   key: string;
@@ -38,6 +39,11 @@ const detectors: Detector[] = [
     name: "Adobe Experience Platform Launch",
     detect: detectAdobeLaunch,
   },
+  {
+  key: "adobe-analytics",
+  name: "Adobe Analytics",
+  detect: detectAdobeAnalytics,
+},
 ];
 
 export function runDetectors(html: string): AnalyticsToolDetection[] {
