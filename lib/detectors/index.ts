@@ -6,6 +6,7 @@ import { detectConsent } from "./consent-detector";
 import { detectDataLayer } from "./datalayer-detector";
 import { detectAdobeLaunch } from "./adobe-launch-detector";
 import { detectAdobeAnalytics } from "./adobe-analytics-detector";
+import { detectMetaPixel } from "./meta-pixel-detector";
 
 type Detector = {
   key: string;
@@ -40,10 +41,15 @@ const detectors: Detector[] = [
     detect: detectAdobeLaunch,
   },
   {
-  key: "adobe-analytics",
-  name: "Adobe Analytics",
-  detect: detectAdobeAnalytics,
-},
+    key: "adobe-analytics",
+    name: "Adobe Analytics",
+    detect: detectAdobeAnalytics,
+  },
+  {
+    key: "meta-pixel",
+    name: "Meta Pixel",
+    detect: detectMetaPixel,
+  },
 ];
 
 export function runDetectors(html: string): AnalyticsToolDetection[] {
