@@ -11,6 +11,10 @@ import { detectMetaPixel } from "./meta-pixel-detector";
 import { detectLinkedInInsight } from "./linkedin-insight-detector";
 import { detectTikTokPixel } from "./tiktok-pixel-detector";
 import { detectEulerian } from "./eulerian-detector";
+import { detectFloodlight } from "./floodlight-detector";
+import { detectDidomi } from "./didomi-detector";
+import { detectAxeptio } from "./axeptio-detector";
+import { detectOneTrust } from "./onetrust-detector";
 
 type Detector = {
   key: string;
@@ -68,6 +72,26 @@ const detectors: Detector[] = [
   key: "linkedin-insight",
   name: "LinkedIn Insight Tag",
   detect: detectLinkedInInsight,
+},
+{
+  key: "floodlight",
+  name: "Floodlight",
+  detect: detectFloodlight,
+},
+{
+  key: "didomi",
+  name: "Didomi",
+  detect: detectDidomi,
+},
+{
+  key: "axeptio",
+  name: "Axeptio",
+  detect: detectAxeptio,
+},
+{
+  key: "onetrust",
+  name: "OneTrust",
+  detect: detectOneTrust,
 },
 {
   key: "tiktok-pixel",
