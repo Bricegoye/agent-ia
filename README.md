@@ -195,7 +195,25 @@ Lors des missions de conseil Digital Analytics, les phases de pré-audit sont so
 L'objectif de ce projet est d'utiliser l'IA pour automatiser ces tâches tout en conservant une approche fiable, basée sur des preuves techniques observables.
 
 ---
+## 🧠 V3 — Moteur de connaissances Analytics
 
+La V3 introduira un moteur de connaissances métier permettant d’enrichir les résultats techniques avec des bonnes pratiques, des points d’attention et des recommandations propres à chaque outil.
+
+Objectif :
+
+- Séparer la détection technique de la connaissance métier
+- Associer chaque outil détecté à ses bonnes pratiques
+- Identifier les erreurs fréquentes
+- Fournir des recommandations contextualisées
+- Améliorer la qualité des rapports générés par l’IA
+
+Exemples de connaissances futures :
+
+- GA4 : Consent Mode, conversions, événements personnalisés, cross-domain
+- GTM : structure du conteneur, gouvernance, naming convention
+- Adobe Analytics : Report Suite, AppMeasurement, Adobe Launch
+- Piano Analytics : collection domain, site ID, tagging events
+- Consent : Didomi, OneTrust, Axeptio, Cookiebot
 
 # 👨‍💻 Auteur
 
