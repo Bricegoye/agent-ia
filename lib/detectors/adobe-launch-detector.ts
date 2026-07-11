@@ -1,8 +1,10 @@
 import type { AnalyticsToolDetection } from "../types";
 
-export function detectAdobeLaunch(html: string): AnalyticsToolDetection {
+export function detectAdobeLaunch(
+  html: string
+): AnalyticsToolDetection {
   const launchRegex =
-    /assets\.adobedtm\.com\/(launch-[A-Za-z0-9_-]+(?:\.min)?\.js)/i;
+    /assets\.adobedtm\.com\/(?:[^"'\\\s/]+\/)*(launch-[A-Za-z0-9_-]+(?:\.min)?\.js)/i;
 
   const match = html.match(launchRegex);
 
@@ -12,8 +14,11 @@ export function detectAdobeLaunch(html: string): AnalyticsToolDetection {
 
   return {
     name: "Adobe Experience Platform Launch",
+
     key: "adobe-launch",
+
     vendor: "Adobe",
+
     category: "Tag Management",
 
     documentationUrl:
@@ -24,24 +29,39 @@ export function detectAdobeLaunch(html: string): AnalyticsToolDetection {
 
     present,
 
-    status: present ? "Détecté directement" : "Non détecté",
+    status:
+      present
+        ? "Détecté directement"
+        : "Non détecté",
 
-    ids: library ? [library] : [],
+    ids:
+      library
+        ? [library]
+        : [],
 
-    evidence: library
-      ? [
-          "assets.adobedtm.com",
-          library,
-        ]
-      : [],
+    evidence:
+      library
+        ? [
+            "assets.adobedtm.com",
+            library,
+          ]
+        : [],
 
-    sources: present ? ["Script externe"] : [],
+    sources:
+      present
+        ? ["Script externe"]
+        : [],
 
-    certainty: present ? "Élevé" : "Faible",
+    certainty:
+      present
+        ? "Élevé"
+        : "Faible",
 
     details: {
       launchDetected: present,
+
       library,
+
       experienceCloud: present,
     },
   };
