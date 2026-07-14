@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { ANALYTICS_SYSTEM_PROMPT } from "../../prompts/analytics";
 import { fetchHTML } from "../../../lib/html-fetcher";
 import { detectAnalyticsTools } from "../../../lib/analytics-detector";
+import { calculateAuditScore } from "../../../lib/scoring/scoring-engine";
+import { scoringRules } from "../../../lib/scoring/scoring-rules";
 
 function extractURL(input: string): string | null {
   const match = input.match(/https?:\/\/[^\s]+/);
@@ -30,7 +32,10 @@ export async function POST(req: Request) {
 
     if (!url) {
       return NextResponse.json(
-        { error: "Merci de fournir une URL valide commençant par http:// ou https://." },
+        {
+          error:
+            "Merci de fournir une URL valide commençant par http:// ou https://.",
+        },
         { status: 400 }
       );
     }
@@ -43,12 +48,25 @@ export async function POST(req: Request) {
       htmlSize: fetchedPage.htmlSize,
     });
 
+    const matchedRuleIds = scoringRules
+      .filter((rule) => rule.match(detectionResult.tools))
+      .map((rule) => rule.id);
+
+    const scoringResult = calculateAuditScore(matchedRuleIds);
+
     const structuredInput = `
 URL analysée : ${url}
 
 Voici le résultat structuré de l'analyse technique automatique :
 
-${JSON.stringify(detectionResult, null, 2)}
+${JSON.stringify(
+  {
+    detection: detectionResult,
+    scoring: scoringResult,
+  },
+  null,
+  2
+)}
 
 Contexte additionnel fourni par l'utilisateur :
 ${input.replace(url, "").trim() || "Aucun contexte additionnel fourni."}
@@ -60,56 +78,65 @@ Si GTM est détecté mais pas GA4, précise que GA4 peut être présent dans GTM
 `.trim();
 
     // ==============================
-// DEBUG MODE V2
-// ==============================
+    // DEBUG MODE V2
+    // ==============================
 
-return NextResponse.json({
-  detection: detectionResult,
-});
+    return NextResponse.json({
+      detection: detectionResult,
+      scoring: scoringResult,
+    });
 
-/*
+    /*
+    // ==============================
+    // OPENAI (désactivé temporairement)
+    // ==============================
 
-// ==============================
-// OPENAI (désactivé temporairement)
-// ==============================
+    const response = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          temperature: 0.3,
+          messages: [
+            {
+              role: "system",
+              content: ANALYTICS_SYSTEM_PROMPT,
+            },
+            {
+              role: "user",
+              content: structuredInput,
+            },
+          ],
+        }),
+      }
+    );
 
-const response = await fetch("https://api.openai.com/v1/chat/completions", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-  },
-  body: JSON.stringify({
-    model: "gpt-4o-mini",
-    temperature: 0.3,
-    messages: [
-      { role: "system", content: ANALYTICS_SYSTEM_PROMPT },
-      { role: "user", content: structuredInput },
-    ],
-  }),
-});
+    const data = await response.json();
 
-const data = await response.json();
+    if (!response.ok) {
+      return NextResponse.json(
+        {
+          error: "Erreur OpenAI",
+          details: data,
+        },
+        { status: response.status }
+      );
+    }
 
-if (!response.ok) {
-  return NextResponse.json(
-    {
-      error: "Erreur OpenAI",
-      details: data,
-    },
-    { status: response.status }
-  );
-}
-
-return NextResponse.json({
-  output:
-    data.choices?.[0]?.message?.content ||
-    "Aucun contenu renvoyé par OpenAI.",
-  usage: data.usage,
-  detection: detectionResult,
-});
-
-*/
+    return NextResponse.json({
+      output:
+        data.choices?.[0]?.message?.content ||
+        "Aucun contenu renvoyé par OpenAI.",
+      usage: data.usage,
+      detection: detectionResult,
+      scoring: scoringResult,
+    });
+    */
   } catch (error) {
     console.error("Erreur API agent :", error);
 
