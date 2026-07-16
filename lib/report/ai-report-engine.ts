@@ -1,3 +1,4 @@
+import type { AIMessage } from "../ai";
 import type { AIReport, AIReportInput } from "./types";
 
 import {
@@ -5,13 +6,8 @@ import {
   REPORT_SYSTEM_PROMPT,
 } from "./prompts";
 
-type ReportMessage = {
-  role: "system" | "user";
-  content: string;
-};
-
 export class AIReportEngine {
-  buildPrompt(input: AIReportInput): ReportMessage[] {
+  buildPrompt(input: AIReportInput): AIMessage[] {
     return [
       {
         role: "system",
