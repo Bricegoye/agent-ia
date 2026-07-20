@@ -1,5 +1,4 @@
 import type { AIClient, AIMessage } from "../ai";
-
 import type { AIReport, AIReportInput } from "./types";
 
 import {
@@ -33,11 +32,41 @@ export class AIReportEngine {
     }
   }
 
+  private validateReport(report: AIReport): AIReport {
+    const requiredFields: (keyof AIReport)[] = [
+      "executiveSummary",
+      "strengths",
+      "weaknesses",
+      "recommendations",
+      "priorityActions",
+      "technicalAnalysis",
+    ];
+
+    for (const field of requiredFields) {
+      const value = report[field];
+
+      if (
+        value === undefined ||
+        value === null ||
+        (typeof value === "string" && value.trim() === "") ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
+        throw new Error(
+          `Le rapport IA est incomplet : le champ "${field}" est manquant ou vide.`
+        );
+      }
+    }
+
+    return report;
+  }
+
   async generate(input: AIReportInput): Promise<AIReport> {
     const messages = this.buildPrompt(input);
 
     const response = await this.aiClient.generate(messages);
 
-    return this.parseReport(response);
+    const report = this.parseReport(response);
+
+    return this.validateReport(report);
   }
 }
