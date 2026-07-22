@@ -1,6 +1,6 @@
 import type { AnalyticsDetectionResult } from "./types";
 import { runDetectors } from "./detectors";
-import { generateInsights } from "./insights-engine";
+
 
 function unique(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))];
@@ -43,8 +43,5 @@ export function detectAnalyticsTools(params: {
     },
   };
 
-  return {
-    ...result,
-    insights: generateInsights(result),
-  };
+  return result;
 }

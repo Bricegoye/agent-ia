@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ANALYTICS_SYSTEM_PROMPT } from "../../prompts/analytics";
 import { fetchHTML } from "../../../lib/html-fetcher";
+import { enrichDetectionResult } from "../../../lib/knowledge/knowledge-engine";
 import { detectAnalyticsTools } from "../../../lib/analytics-detector";
 import { calculateAuditScore } from "../../../lib/scoring/scoring-engine";
 import { scoringRules } from "../../../lib/scoring/scoring-rules";
@@ -42,11 +43,13 @@ export async function POST(req: Request) {
 
     const fetchedPage = await fetchHTML(url);
 
-    const detectionResult = detectAnalyticsTools({
-      url: fetchedPage.url,
-      html: fetchedPage.html,
-      htmlSize: fetchedPage.htmlSize,
-    });
+   const rawDetectionResult = detectAnalyticsTools({
+  url: fetchedPage.url,
+  html: fetchedPage.html,
+  htmlSize: fetchedPage.htmlSize,
+});
+
+const detectionResult = enrichDetectionResult(rawDetectionResult);
 
     const matchedRuleIds = scoringRules
       .filter((rule) => rule.match(detectionResult.tools))
