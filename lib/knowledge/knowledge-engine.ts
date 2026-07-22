@@ -5,22 +5,33 @@ import type {
 
 import { evaluateKnowledgeRules } from "./rules";
 
-export function generateKnowledgeInsights(
-  result: AnalyticsDetectionResult
-): AnalyticsInsight[] {
-  return evaluateKnowledgeRules(result);
-}
+export class KnowledgeEngine {
 
-export function enrichDetectionResult(
-  result: AnalyticsDetectionResult
-): AnalyticsDetectionResult {
-  const knowledgeInsights = generateKnowledgeInsights(result);
+  /**
+   * Génère les insights métier
+   */
+  generateInsights(
+    result: AnalyticsDetectionResult
+  ): AnalyticsInsight[] {
+    return evaluateKnowledgeRules(result);
+  }
 
-  return {
-    ...result,
-    insights: [
-      ...(result.insights ?? []),
-      ...knowledgeInsights,
-    ],
-  };
+  /**
+   * Enrichit le résultat de détection
+   */
+  analyze(
+    result: AnalyticsDetectionResult
+  ): AnalyticsDetectionResult {
+
+    const knowledgeInsights = this.generateInsights(result);
+
+    return {
+      ...result,
+      insights: [
+        ...(result.insights ?? []),
+        ...knowledgeInsights,
+      ],
+    };
+  }
+
 }

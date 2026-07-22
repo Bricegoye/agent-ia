@@ -3,10 +3,12 @@ import type {
   AnalyticsInsight,
 } from "./types";
 
-import { generateKnowledgeInsights } from "./knowledge/knowledge-engine";
+import { KnowledgeEngine } from "./knowledge/knowledge-engine";
+
+const knowledgeEngine = new KnowledgeEngine();
 
 export function generateInsights(
   result: AnalyticsDetectionResult
 ): AnalyticsInsight[] {
-  return generateKnowledgeInsights(result);
+  return knowledgeEngine.generateInsights(result);
 }
