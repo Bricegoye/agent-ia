@@ -1,13 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { APIOrchestrator } from "@/lib/orchestrator/api-orchestrator";
+import type { ReportLanguage } from "@/lib/report/types";
 
 export async function POST(req: NextRequest) {
-  const { url } = await req.json();
+  try {
+    const body = await req.json();
 
-  const orchestrator = new APIOrchestrator();
+    const url = body.url;
 
-  const result = await orchestrator.analyze(url);
+    const language: ReportLanguage =
+      body.language === "fr" ? "fr" : "en";
 
-  return NextResponse.json(result);
+    if (!url || typeof url !== "string") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "A valid URL is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const orchestrator = new APIOrchestrator();
+
+    const result = await orchestrator.analyze(
+      url,
+      language
+    );
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("[AIP API]", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown API error",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }

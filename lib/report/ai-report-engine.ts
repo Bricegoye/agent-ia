@@ -27,7 +27,7 @@ export class AIReportEngine {
       return JSON.parse(response) as AIReport;
     } catch {
       throw new Error(
-        "La réponse retournée par l'IA n'est pas un JSON valide."
+        "The AI response is not valid JSON."
       );
     }
   }
@@ -52,7 +52,7 @@ export class AIReportEngine {
         (Array.isArray(value) && value.length === 0)
       ) {
         throw new Error(
-          `Le rapport IA est incomplet : le champ "${field}" est manquant ou vide.`
+          `The AI report is incomplete: field "${field}" is missing or empty.`
         );
       }
     }

@@ -1,5 +1,7 @@
 import { scoringRules } from "./scoring-rules";
 
+import type { AnalyticsToolDetection } from "../types";
+
 import type {
   AuditScore,
   CategoryScore,
@@ -25,7 +27,7 @@ function getGrade(score: number): string {
 }
 
 export class ScoringEngine {
-  calculate(matchedRuleIds: string[]): AuditScore {
+  calculate(tools: AnalyticsToolDetection[]): AuditScore {
     const categoryScores: CategoryScore[] = categories.map((category) => {
       const categoryRules = scoringRules.filter(
         (rule) => rule.category === category
@@ -37,7 +39,7 @@ export class ScoringEngine {
       );
 
       const score = categoryRules
-        .filter((rule) => matchedRuleIds.includes(rule.id))
+        .filter((rule) => rule.match(tools))
         .reduce((total, rule) => total + rule.points, 0);
 
       return {

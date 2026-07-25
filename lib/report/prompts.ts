@@ -1,44 +1,91 @@
 import type { AIReportInput } from "./types";
 
 export const REPORT_SYSTEM_PROMPT = `
-Tu es un consultant senior spécialisé en Digital Analytics, Tag Management,
-consentement, qualité des données et gouvernance marketing.
+You are a senior consultant specialized in Digital Analytics, Tag Management,
+consent management, data quality and marketing governance.
 
-Ta mission est de produire un rapport d'audit professionnel à partir de données
-déjà détectées, analysées et scorées.
+Your mission is to produce a professional audit report from data that has
+already been detected, analyzed and scored.
 
-Règles impératives :
+Mandatory rules:
 
-- Reste strictement factuel.
-- N'invente aucune technologie, aucun identifiant et aucun problème.
-- Utilise uniquement les informations présentes dans les données fournies.
-- Distingue clairement les faits, les risques et les recommandations.
-- Ne considère pas une technologie absente comme définitivement inexistante si
-  la détection peut être limitée par le chargement dynamique, un proxy, un captcha
-  ou un rendu côté navigateur.
-- Priorise les recommandations selon leur impact sur la mesure, le consentement,
-  la qualité des données et la gouvernance.
-- Rédige en français.
-- Retourne uniquement un JSON valide.
+- Remain strictly factual.
+- Never invent technologies, identifiers, issues or findings.
+- Use only the information contained in the provided data.
+- Clearly distinguish facts, risks and recommendations.
+- Do not consider an undetected technology as definitively absent when
+  detection may be limited by dynamic loading, proxies, captchas,
+  consent mechanisms or browser-side rendering.
+- Prioritize recommendations according to their impact on measurement,
+  consent, data quality and governance.
+- Follow the requested report language.
+- Return valid JSON only.
+- Do not include Markdown.
+- Do not include text before or after the JSON object.
 `;
 
-export function buildReportUserPrompt(input: AIReportInput): string {
-  return `
-Génère un rapport d'audit Digital Analytics à partir des données suivantes.
+export function buildReportUserPrompt(
+  input: AIReportInput
+): string {
+  const languageInstruction =
+    input.language === "fr"
+      ? `
+REPORT LANGUAGE
 
-URL AUDITÉE
+Generate ALL human-readable report content in French.
+
+This applies to:
+- executiveSummary
+- strengths
+- weaknesses
+- recommendations
+- priorityActions
+- technicalAnalysis
+
+Do not translate technical product names, technology names,
+IDs, URLs, tracking identifiers or standardized technical terms
+when translation would reduce technical accuracy.
+`
+      : `
+REPORT LANGUAGE
+
+Generate ALL human-readable report content in English.
+
+This applies to:
+- executiveSummary
+- strengths
+- weaknesses
+- recommendations
+- priorityActions
+- technicalAnalysis
+
+Do not translate technical product names, technology names,
+IDs, URLs, tracking identifiers or standardized technical terms
+when translation would reduce technical accuracy.
+`;
+
+  return `
+Generate a professional Digital Analytics audit report from the following data.
+
+${languageInstruction}
+
+AUDITED URL
+
 ${input.detection.url}
 
-RÉSULTAT DE DÉTECTION
+DETECTION ENGINE RESULT
+
 ${JSON.stringify(input.detection, null, 2)}
 
-INSIGHTS DU KNOWLEDGE ENGINE
+KNOWLEDGE ENGINE INSIGHTS
+
 ${JSON.stringify(input.knowledge, null, 2)}
 
-RÉSULTAT DU SCORING ENGINE
+SCORING ENGINE RESULT
+
 ${JSON.stringify(input.scoring, null, 2)}
 
-Le JSON retourné doit respecter exactement cette structure :
+The returned JSON must follow exactly this structure:
 
 {
   "executiveSummary": "string",
@@ -49,13 +96,30 @@ Le JSON retourné doit respecter exactement cette structure :
   "technicalAnalysis": "string"
 }
 
-Contraintes de rédaction :
+WRITING REQUIREMENTS
 
-- executiveSummary : synthèse courte et compréhensible par un décideur.
-- strengths : éléments positifs réellement observés.
-- weaknesses : faiblesses ou risques réellement observés.
-- recommendations : recommandations concrètes et applicables.
-- priorityActions : maximum 5 actions, classées de la plus urgente à la moins urgente.
-- technicalAnalysis : analyse plus détaillée destinée à une équipe technique.
+- executiveSummary:
+  Provide a concise summary understandable by a decision-maker.
+
+- strengths:
+  Include only positive elements actually supported by the audit data.
+
+- weaknesses:
+  Include only weaknesses or risks supported by the audit data.
+
+- recommendations:
+  Provide concrete and actionable recommendations based on the findings.
+
+- priorityActions:
+  Provide a maximum of 5 actions, ordered from highest to lowest priority.
+
+- technicalAnalysis:
+  Provide a more detailed analysis intended for a technical or Digital Analytics team.
+
+FINAL REQUIREMENTS
+
+- Respect the requested report language.
+- Preserve the exact JSON property names defined above.
+- Return JSON only.
 `;
 }

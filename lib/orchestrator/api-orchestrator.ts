@@ -7,6 +7,8 @@ import { ScoringEngine } from "@/lib/scoring/scoring-engine";
 import { AIReportEngine } from "@/lib/report/ai-report-engine";
 import { OpenAIClient } from "@/lib/ai/openai-client";
 
+import type { ReportLanguage } from "@/lib/report/types";
+
 export class APIOrchestrator {
   private readonly detectionEngine: DetectionEngine;
   private readonly knowledgeEngine: KnowledgeEngine;
@@ -22,7 +24,10 @@ export class APIOrchestrator {
     this.reportEngine = new AIReportEngine(aiClient);
   }
 
-  async analyze(url: string) {
+  async analyze(
+    url: string,
+    language: ReportLanguage = "en"
+  ) {
     const start = Date.now();
 
     try {
@@ -39,29 +44,33 @@ export class APIOrchestrator {
         this.knowledgeEngine.analyze(detection);
 
       /**
-       * 3. Récupération des règles validées
-       */
-      const matchedRuleIds =
-        knowledge.insights?.map(i => i.key) ?? [];
-
-      /**
-       * 4. Scoring
+       * 3. Scoring
+       *
+       * Le Scoring Engine évalue directement
+       * les outils détectés.
        */
       const scoring =
         this.scoringEngine.calculate(
-          matchedRuleIds
+          knowledge.tools ?? []
         );
 
       /**
-       * 5. Rapport IA
+       * 4. Rapport IA
+       *
+       * La langue sélectionnée par l'utilisateur
+       * est transmise au Report Engine.
        */
       const report =
         await this.reportEngine.generate({
           detection: knowledge,
           knowledge: knowledge.insights ?? [],
           scoring,
+          language,
         });
 
+      /**
+       * 5. Résultat final
+       */
       return {
         success: true,
 
@@ -79,7 +88,6 @@ export class APIOrchestrator {
       };
 
     } catch (error) {
-
       console.error("[AIP]", error);
 
       return {
@@ -94,7 +102,6 @@ export class APIOrchestrator {
             ? error.message
             : "Unknown error",
       };
-
     }
   }
 }

@@ -11,22 +11,35 @@ export async function GET() {
     const reportEngine = new AIReportEngine(aiClient);
 
     const testInput: AIReportInput = {
+      /**
+       * Langue du rapport IA de test
+       */
+      language: "fr",
+
+      /**
+       * Detection Engine mock
+       */
       detection: {
         url: "https://example.com",
         fetchedAt: new Date().toISOString(),
         htmlSize: 125000,
+
         tools: [
           {
             name: "Google Tag Manager",
             key: "gtm",
             vendor: "Google",
             category: "Tag Management",
-            documentationUrl: "https://support.google.com/tagmanager",
-            description: "Gestionnaire de balises Google.",
+            documentationUrl:
+              "https://support.google.com/tagmanager",
+            description:
+              "Gestionnaire de balises Google.",
             present: true,
             status: "Détecté directement",
             ids: ["GTM-TEST123"],
-            evidence: ["googletagmanager.com/gtm.js?id=GTM-TEST123"],
+            evidence: [
+              "googletagmanager.com/gtm.js?id=GTM-TEST123",
+            ],
             sources: ["script"],
             certainty: "Élevé",
           },
@@ -35,8 +48,10 @@ export async function GET() {
             key: "ga4",
             vendor: "Google",
             category: "Analytics",
-            documentationUrl: "https://support.google.com/analytics",
-            description: "Solution de mesure d'audience Google Analytics 4.",
+            documentationUrl:
+              "https://support.google.com/analytics",
+            description:
+              "Solution de mesure d'audience Google Analytics 4.",
             present: true,
             status: "Détecté directement",
             ids: ["G-TEST123"],
@@ -45,7 +60,9 @@ export async function GET() {
             certainty: "Élevé",
           },
         ],
+
         insights: [],
+
         rawSignals: {
           scriptSrcs: [],
           headSnippet: "",
@@ -53,6 +70,9 @@ export async function GET() {
         },
       },
 
+      /**
+       * Knowledge Engine mock
+       */
       knowledge: [
         {
           key: "ga4-without-consent",
@@ -64,10 +84,14 @@ export async function GET() {
         },
       ],
 
+      /**
+       * Scoring Engine mock
+       */
       scoring: {
         globalScore: 68,
         maxScore: 100,
         grade: "C",
+
         categories: [
           {
             category: "analytics",
@@ -98,14 +122,22 @@ export async function GET() {
       },
     };
 
-    const report = await reportEngine.generate(testInput);
+    /**
+     * Generate AI report
+     */
+    const report =
+      await reportEngine.generate(testInput);
 
     return NextResponse.json({
       success: true,
+      language: testInput.language,
       report,
     });
   } catch (error) {
-    console.error("AI report test failed:", error);
+    console.error(
+      "AI report test failed:",
+      error
+    );
 
     return NextResponse.json(
       {
