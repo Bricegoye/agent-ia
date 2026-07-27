@@ -8,14 +8,18 @@ function isDetected(
   tools: AnalyticsToolDetection[],
   key: string
 ): boolean {
-  return tools.some((tool) => tool.key === key && tool.present);
+  return tools.some(
+    (tool) => tool.key === key && tool.present
+  );
 }
 
 function getDetectedTool(
   tools: AnalyticsToolDetection[],
   key: string
 ): AnalyticsToolDetection | undefined {
-  return tools.find((tool) => tool.key === key && tool.present);
+  return tools.find(
+    (tool) => tool.key === key && tool.present
+  );
 }
 
 export function evaluateKnowledgeRules(
@@ -34,31 +38,60 @@ export function evaluateKnowledgeRules(
   const hasAxeptio = isDetected(tools, "axeptio");
 
   const hasAnyConsent =
-    hasConsent || hasDidomi || hasOneTrust || hasAxeptio;
+    hasConsent ||
+    hasDidomi ||
+    hasOneTrust ||
+    hasAxeptio;
 
-  const hasAdobeLaunch = isDetected(tools, "adobe-launch");
+  const hasAdobeLaunch = isDetected(
+    tools,
+    "adobe-launch"
+  );
 
-  const hasMetaPixel = isDetected(tools, "meta-pixel");
-  const hasLinkedIn = isDetected(tools, "linkedin-insight");
-  const hasTikTok = isDetected(tools, "tiktok-pixel");
-  const hasFloodlight = isDetected(tools, "floodlight");
+  const hasMetaPixel = isDetected(
+    tools,
+    "meta-pixel"
+  );
+
+  const hasLinkedIn = isDetected(
+    tools,
+    "linkedin-insight"
+  );
+
+  const hasTikTok = isDetected(
+    tools,
+    "tiktok-pixel"
+  );
+
+  const hasFloodlight = isDetected(
+    tools,
+    "floodlight"
+  );
 
   const hasAdvertisingTool =
-    hasMetaPixel || hasLinkedIn || hasTikTok || hasFloodlight;
+    hasMetaPixel ||
+    hasLinkedIn ||
+    hasTikTok ||
+    hasFloodlight;
 
-  // Plusieurs systèmes de Tag Management
+  /**
+   * Plusieurs systèmes de Tag Management
+   */
   if (hasGTM && hasAdobeLaunch) {
     insights.push({
       key: "multiple-tag-management-systems",
       severity: "warning",
-      title: "Plusieurs systèmes de Tag Management détectés",
+      title:
+        "Plusieurs systèmes de Tag Management détectés",
       description:
         "Google Tag Manager et Adobe Experience Platform Launch sont détectés sur la même page. Il est recommandé de vérifier la gouvernance des balises afin d’éviter les doublons de tracking, les conflits de déclenchement ou les écarts de mesure.",
       relatedTools: ["gtm", "adobe-launch"],
     });
   }
 
-  // GTM détecté
+  /**
+   * GTM détecté
+   */
   if (hasGTM) {
     insights.push({
       key: "gtm-detected",
@@ -70,7 +103,14 @@ export function evaluateKnowledgeRules(
     });
   }
 
-  // GTM sans GA4 visible
+  /**
+   * GTM détecté sans GA4 visible.
+   *
+   * IMPORTANT :
+   * GA4 peut être déployé dans le conteneur GTM.
+   * L'absence dans le HTML statique ne signifie donc
+   * pas que GA4 est absent du site.
+   */
   if (hasGTM && !hasGA4) {
     insights.push({
       key: "gtm-without-visible-ga4",
@@ -82,7 +122,9 @@ export function evaluateKnowledgeRules(
     });
   }
 
-  // GA4 sans GTM
+  /**
+   * GA4 détecté sans GTM.
+   */
   if (hasGA4 && !hasGTM) {
     insights.push({
       key: "ga4-direct-implementation",
@@ -94,26 +136,44 @@ export function evaluateKnowledgeRules(
     });
   }
 
-  // GTM sans DataLayer
+  /**
+   * GTM détecté sans DataLayer visible.
+   *
+   * Le DataLayer peut être créé ou enrichi au runtime.
+   */
   if (hasGTM && !hasDataLayer) {
     insights.push({
       key: "gtm-without-datalayer",
       severity: "warning",
-      title: "GTM détecté sans DataLayer identifiable",
+      title:
+        "GTM détecté sans DataLayer identifiable",
       description:
-        "Google Tag Manager est présent, mais aucun DataLayer n’a été identifié dans le HTML statique. Une vérification en environnement navigateur peut être nécessaire.",
+        "Google Tag Manager est présent, mais aucun DataLayer n’a été identifié dans le HTML statique. Cela ne permet pas de conclure à son absence. Une vérification en environnement navigateur peut être nécessaire.",
       relatedTools: ["gtm", "datalayer"],
     });
   }
 
-  // CMP détectée
+  /**
+   * CMP détectée.
+   *
+   * CORRECTION V2 :
+   *
+   * Une CMP détectée ne prouve pas :
+   * - la conformité réglementaire ;
+   * - la présence de Consent Mode ;
+   * - la bonne configuration de Consent Mode.
+   *
+   * Consent Mode est traité comme une vérification
+   * d'intégration avec l'écosystème Google.
+   */
   if (hasAnyConsent) {
     insights.push({
       key: "cmp-detected-consent-mode-check",
-      severity: "warning",
-      title: "CMP détectée : vérifier Consent Mode",
+      severity: "info",
+      title:
+        "CMP détectée : intégration Consent Mode à vérifier",
       description:
-        "Une plateforme de gestion du consentement est détectée. Il est recommandé de vérifier que Google Consent Mode v2 est correctement configuré afin de garantir la conformité et la qualité des données Analytics.",
+        "Une plateforme de gestion du consentement est détectée. Si des services Google sont utilisés, il est recommandé de vérifier en environnement runtime si Google Consent Mode est implémenté et correctement relié aux choix de consentement. La présence d’une CMP ne permet pas, à elle seule, de confirmer la conformité réglementaire.",
       relatedTools: [
         ...(hasDidomi ? ["didomi"] : []),
         ...(hasOneTrust ? ["onetrust"] : []),
@@ -123,29 +183,52 @@ export function evaluateKnowledgeRules(
     });
   }
 
-  // GA4 sans CMP
+  /**
+   * GA4 détecté sans CMP visible.
+   *
+   * CORRECTION V2 :
+   *
+   * "CMP non détectée" ne signifie pas
+   * "CMP absente".
+   */
   if (hasGA4 && !hasAnyConsent) {
     insights.push({
-      key: "ga4-without-consent",
+      key: "ga4-without-visible-consent",
       severity: "warning",
-      title: "GA4 détecté sans CMP identifiable",
+      title: "GA4 détecté, CMP non confirmée",
       description:
-        "Google Analytics 4 est détecté, mais aucune plateforme de gestion du consentement n’a été identifiée dans le HTML analysé.",
+        "Google Analytics 4 est détecté, mais aucune plateforme de gestion du consentement n’a pu être confirmée dans le HTML statique analysé. Cela ne prouve pas l’absence d’un mécanisme de consentement. Une vérification runtime est recommandée.",
       relatedTools: ["ga4", "consent"],
     });
   }
 
-  // Outils publicitaires sans CMP
+  /**
+   * Outils publicitaires détectés sans CMP visible.
+   *
+   * CORRECTION V2 :
+   *
+   * Avant :
+   * severity = critical
+   *
+   * Maintenant :
+   * severity = warning
+   *
+   * Une CMP peut être chargée dynamiquement ou
+   * être invisible dans l'analyse statique.
+   */
   if (hasAdvertisingTool && !hasAnyConsent) {
     insights.push({
-      key: "advertising-without-consent",
-      severity: "critical",
-      title: "Outils publicitaires détectés sans CMP identifiable",
+      key: "advertising-without-visible-consent",
+      severity: "warning",
+      title:
+        "Outils publicitaires détectés, CMP non confirmée",
       description:
-        "Un ou plusieurs outils publicitaires sont présents, mais aucune plateforme de gestion du consentement n’a été identifiée.",
+        "Un ou plusieurs outils publicitaires sont détectés, mais aucune plateforme de gestion du consentement n’a pu être confirmée dans le HTML statique analysé. Cela ne permet pas de conclure à l’absence d’un mécanisme de consentement. Une vérification runtime du déclenchement des balises et de la gestion du consentement est recommandée.",
       relatedTools: [
         ...(hasMetaPixel ? ["meta-pixel"] : []),
-        ...(hasLinkedIn ? ["linkedin-insight"] : []),
+        ...(hasLinkedIn
+          ? ["linkedin-insight"]
+          : []),
         ...(hasTikTok ? ["tiktok-pixel"] : []),
         ...(hasFloodlight ? ["floodlight"] : []),
         "consent",
@@ -153,7 +236,9 @@ export function evaluateKnowledgeRules(
     });
   }
 
-  // Plusieurs conteneurs GTM
+  /**
+   * Plusieurs conteneurs GTM
+   */
   const gtmTool = getDetectedTool(tools, "gtm");
 
   if (gtmTool && gtmTool.ids.length > 1) {
@@ -167,16 +252,35 @@ export function evaluateKnowledgeRules(
     });
   }
 
-  // Aucun outil détecté
-  const detectedTools = tools.filter((tool) => tool.present);
+  /**
+   * Aucun outil supporté détecté.
+   *
+   * CORRECTION V2 :
+   *
+   * Avant :
+   * "Aucun outil Analytics détecté"
+   * severity = critical
+   *
+   * Problème :
+   * le moteur testait en réalité TOUS les outils,
+   * pas uniquement Analytics.
+   *
+   * Et surtout :
+   * aucun outil détecté statiquement
+   * ≠ aucun outil présent sur le site.
+   */
+  const detectedTools = tools.filter(
+    (tool) => tool.present
+  );
 
   if (detectedTools.length === 0) {
     insights.push({
-      key: "no-analytics-tool-detected",
-      severity: "critical",
-      title: "Aucun outil Analytics détecté",
+      key: "no-supported-tool-detected",
+      severity: "warning",
+      title:
+        "Aucun outil supporté détecté dans l’analyse statique",
       description:
-        "Aucune solution Analytics ou Tag Management n’a été détectée dans le HTML statique. Une analyse runtime avec un navigateur ou un audit manuel est recommandée.",
+        "Aucun des outils actuellement pris en charge par le Detection Engine n’a pu être confirmé dans le HTML statique. Cela ne signifie pas qu’aucune technologie analytics, marketing ou de consentement n’est présente. Une analyse runtime ou un audit manuel est recommandé.",
       relatedTools: [],
     });
   }

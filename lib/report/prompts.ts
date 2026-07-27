@@ -64,6 +64,23 @@ CONSENT AND COMPLIANCE RULES
   state that consent implementation could not be fully verified and recommend
   runtime or manual verification.
 
+- Google Consent Mode is a mechanism for communicating consent states
+  to Google services. Its presence, absence or configuration MUST NOT be
+  used by itself to determine GDPR, CNIL or ePrivacy compliance.
+
+- Never state or imply that Google Consent Mode is required to achieve
+  regulatory compliance.
+
+- When Google Consent Mode cannot be confirmed, describe this only as
+  an unverified integration point for Google services, not as a
+  regulatory compliance weakness or risk.
+
+- The presence of a CMP does not prove that user consent choices are correctly
+  collected, transmitted or respected by analytics and marketing technologies.
+
+- The absence of visible consent signals in static HTML does not prove that
+  consent signals are absent at runtime.
+
 DATA QUALITY RULES
 
 - Do not equate DataLayer presence with high data quality.
@@ -75,6 +92,10 @@ DATA QUALITY RULES
 - A low Data Quality score means limited evidence was validated by the audit.
   Do not claim that the site's actual collected data is unreliable unless the
   provided evidence explicitly supports that conclusion.
+
+- A DataLayer being detected confirms its technical presence only.
+  Evaluate its maturity using the available events, business events,
+  standardized variables, ecommerce signals and consent signals.
 
 RECOMMENDATION RULES
 
@@ -88,6 +109,13 @@ RECOMMENDATION RULES
   "could not be confirmed",
   "requires runtime verification",
   or equivalent wording in the requested report language.
+
+- Do not recommend implementing Google Consent Mode solely for the purpose
+  of achieving regulatory compliance.
+
+- If a CMP is detected and Google services are relevant, Google Consent Mode
+  may be recommended as an integration point to verify, but not as proof or
+  a prerequisite of regulatory compliance.
 
 - Prioritize recommendations according to their impact on measurement,
   consent, data quality and governance.
@@ -171,16 +199,43 @@ Do not transform missing evidence into proof of absence.
 In particular:
 
 - "Non détecté" does not mean "absent".
+
 - "Possiblement chargé via GTM" does not mean "absent".
+
 - A category score of 0 does not prove that the corresponding capability
   is absent from the website.
+
 - A detected technology is not automatically correctly configured.
-- An undetected CMP does not prove regulatory non-compliance.
+
+- An undetected CMP does not prove that no consent mechanism exists.
+
 - A detected CMP does not prove regulatory compliance.
+
+- An undetected CMP does not prove regulatory non-compliance.
+
+- Google Consent Mode and a Consent Management Platform are different
+  mechanisms and MUST NOT be treated as equivalent.
+
+- Google Consent Mode MUST NOT be presented as a requirement or proof
+  of GDPR, CNIL or ePrivacy compliance.
+
+- Failure to confirm Google Consent Mode MUST NOT be described as a
+  regulatory compliance weakness or regulatory risk.
+
+- If Google Consent Mode cannot be confirmed, describe it only as an
+  integration point with Google services that requires runtime verification
+  when those services are relevant.
+
 - Do not recommend installing a technology until the available evidence
   supports that it is actually missing.
+
 - When the evidence is insufficient, recommend runtime, network,
   Tag Management container or manual verification first.
+
+- Static HTML analysis has technical limitations. Technologies may be loaded
+  dynamically, after consent, through a Tag Management System, through
+  browser-side JavaScript or through other mechanisms not visible in the
+  initial HTML.
 
 The returned JSON must follow exactly this structure:
 
@@ -199,20 +254,30 @@ WRITING REQUIREMENTS
   Provide a concise summary understandable by a decision-maker.
   Clearly mention important audit limitations when they materially affect
   the conclusions.
+  Do not present unverified technologies as absent.
 
 - strengths:
   Include only positive elements actually supported by the audit data.
+  A detected technology can be listed as a confirmed technical presence,
+  but detection alone must not be presented as proof of correct configuration
+  or regulatory compliance.
 
 - weaknesses:
   Include only weaknesses or risks supported by the audit data.
   Do not list an undetected technology as a confirmed weakness unless
   the evidence establishes that it is actually absent or incorrectly
   implemented.
+  Missing evidence should normally be described as an audit limitation
+  or an element requiring verification.
+  Failure to confirm Google Consent Mode must not be presented as a
+  regulatory compliance weakness.
 
 - recommendations:
   Provide concrete and actionable recommendations based on the findings.
   When presence or configuration is uncertain, recommend verification
   before installation or remediation.
+  Do not recommend Google Consent Mode as a way to guarantee regulatory
+  compliance.
 
 - priorityActions:
   Provide a maximum of 5 actions, ordered from highest to lowest priority.
@@ -224,6 +289,8 @@ WRITING REQUIREMENTS
   Digital Analytics team.
   Clearly distinguish confirmed detections from elements that could not
   be verified by static analysis.
+  Never infer regulatory compliance or non-compliance solely from the
+  presence or absence of Google Consent Mode, a CMP or static consent signals.
 
 FINAL REQUIREMENTS
 

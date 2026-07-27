@@ -116,7 +116,16 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/*
+ * Smooth scrolling for internal navigation
+ * Example: View Demo → #demo
+ */
+html {
+  scroll-behavior: smooth;
 }

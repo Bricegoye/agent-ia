@@ -48,7 +48,10 @@ export default function Features() {
   ];
 
   return (
-    <section className="bg-slate-50 py-28">
+    <section
+      id="features"
+      className="scroll-mt-24 bg-slate-50 py-28"
+    >
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Section Header */}
