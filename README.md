@@ -16,7 +16,7 @@ The platform combines **deterministic detection and scoring engines** with **Gen
 
 AIP is deployed on Vercel:
 
-**https://agent-ia-lilac.vercel.app/**
+**https://aip-v2.vercel.app/**
 
 ---
 
