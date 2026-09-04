@@ -9,7 +9,8 @@
     "lint": "eslint",
     "browser:test": "tsx scripts/test-browser-engine.ts",
     "evidence:test": "tsx scripts/test-dynamic-evidence.ts",
-    "fusion:test": "tsx scripts/test-detection-fusion.ts"
+    "fusion:test": "tsx scripts/test-detection-fusion.ts",
+    "security:test": "tsx scripts/test-url-safety.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
