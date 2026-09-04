@@ -1,6 +1,7 @@
 import {
   chromium,
   type Browser,
+  type Request,
   type Response,
 } from "playwright";
 
@@ -14,6 +15,24 @@ export interface RuntimeGlobals {
   oneTrust: boolean;
 }
 
+export type NetworkRequestState =
+  | "pending"
+  | "completed"
+  | "failed";
+
+export interface NetworkObservation {
+  url: string;
+  method: string;
+  resourceType: string;
+  state: NetworkRequestState;
+  httpStatus: number | null;
+  failureText: string | null;
+  isNavigationRequest: boolean;
+  startedAt: string;
+  completedAt: string | null;
+  durationMs: number | null;
+}
+
 export interface BrowserAnalysisResult {
   requestedUrl: string;
   finalUrl: string;
@@ -22,7 +41,19 @@ export interface BrowserAnalysisResult {
   html: string;
   htmlSize: number;
   scripts: string[];
+
+  /*
+   * Conservé pour assurer la compatibilité
+   * avec les détecteurs existants.
+   */
   networkRequests: string[];
+
+  /*
+   * Nouvelle représentation structurée
+   * des preuves réseau.
+   */
+  networkObservations: NetworkObservation[];
+
   dataLayer: unknown[];
   runtimeGlobals: RuntimeGlobals;
   consoleErrors: string[];
@@ -89,9 +120,42 @@ export class BrowserEngine {
     let browser: Browser | null = null;
 
     const networkRequests = new Set<string>();
+    const networkObservations: NetworkObservation[] = [];
+
+    const observationByRequest =
+      new Map<Request, NetworkObservation>();
+
+    const observationStartTimes =
+      new Map<Request, number>();
+
     const consoleErrors: string[] = [];
     const pageErrors: string[] = [];
     const warnings: string[] = [];
+
+    const finishNetworkObservation = (
+      request: Request,
+      state: NetworkRequestState,
+      failureText: string | null = null
+    ) => {
+      const observation =
+        observationByRequest.get(request);
+
+      const requestStartedAt =
+        observationStartTimes.get(request);
+
+      if (!observation || requestStartedAt === undefined) {
+        return;
+      }
+
+      const finishedAt = Date.now();
+
+      observation.state = state;
+      observation.failureText = failureText;
+      observation.completedAt =
+        new Date(finishedAt).toISOString();
+      observation.durationMs =
+        finishedAt - requestStartedAt;
+    };
 
     try {
       browser = await chromium.launch({
@@ -129,6 +193,80 @@ export class BrowserEngine {
           ) {
             networkRequests.add(request.url());
           }
+
+          if (
+            networkObservations.length >=
+            this.maxNetworkRequests
+          ) {
+            return;
+          }
+
+          const requestStartedAt = Date.now();
+
+          const observation: NetworkObservation = {
+            url: request.url(),
+            method: request.method(),
+            resourceType: request.resourceType(),
+            state: "pending",
+            httpStatus: null,
+            failureText: null,
+            isNavigationRequest:
+              request.isNavigationRequest(),
+            startedAt:
+              new Date(requestStartedAt).toISOString(),
+            completedAt: null,
+            durationMs: null,
+          };
+
+          networkObservations.push(observation);
+          observationByRequest.set(
+            request,
+            observation
+          );
+          observationStartTimes.set(
+            request,
+            requestStartedAt
+          );
+        });
+
+        page.on("response", (receivedResponse) => {
+          const observation =
+            observationByRequest.get(
+              receivedResponse.request()
+            );
+
+          if (observation) {
+            observation.httpStatus =
+              receivedResponse.status();
+          }
+        });
+
+        page.on("requestfinished", (request) => {
+          finishNetworkObservation(
+            request,
+            "completed"
+          );
+        });
+
+        page.on("requestfailed", (request) => {
+          const failure =
+            request.failure()?.errorText ??
+            "Unknown request failure";
+
+          finishNetworkObservation(
+            request,
+            "failed",
+            failure
+          );
+
+          if (
+            warnings.length <
+            MAX_RECORDED_ERRORS
+          ) {
+            warnings.push(
+              `Request failed: ${request.url()} — ${failure}`
+            );
+          }
         });
 
         page.on("console", (message) => {
@@ -150,21 +288,6 @@ export class BrowserEngine {
           }
         });
 
-        page.on("requestfailed", (request) => {
-          if (
-            warnings.length <
-            MAX_RECORDED_ERRORS
-          ) {
-            const failure =
-              request.failure()?.errorText ??
-              "Unknown request failure";
-
-            warnings.push(
-              `Request failed: ${request.url()} — ${failure}`
-            );
-          }
-        });
-
         let response: Response | null = null;
 
         try {
@@ -180,13 +303,6 @@ export class BrowserEngine {
           );
         }
 
-        /*
-         * Certains sites conservent continuellement
-         * des connexions réseau ouvertes.
-         *
-         * Nous attendons donc l'événement load lorsqu'il
-         * est disponible, puis un court délai contrôlé.
-         */
         try {
           await page.waitForLoadState("load", {
             timeout: 10_000,
@@ -303,6 +419,12 @@ export class BrowserEngine {
           networkRequests: [
             ...networkRequests,
           ],
+          networkObservations:
+            networkObservations.map(
+              (observation) => ({
+                ...observation,
+              })
+            ),
           dataLayer: runtimeData.dataLayer,
           runtimeGlobals:
             runtimeData.runtimeGlobals,
