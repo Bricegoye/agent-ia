@@ -1,18 +1,18 @@
 # 🚀 AIP — Analytics Intelligence Platform
 
-> **Automated Digital Analytics Audit & Intelligence Platform**
+> **AI-Powered Digital Analytics Audit Platform**
 
-### Analyze. Score. Improve.
+### Detect. Analyze. Score. Improve.
 
-AIP is a Digital Analytics auditing platform designed to analyze a website's analytics ecosystem from a simple URL, identify supported tracking technologies, evaluate implementation maturity, and generate actionable audit recommendations.
+AIP is an automated Digital Analytics auditing platform designed to analyze a website's analytics ecosystem from a simple URL.
 
-The platform combines **deterministic detection and scoring engines** with **Generative AI** to transform technical signals into a structured Digital Analytics audit.
+It combines **static analysis, browser-based runtime inspection, deterministic detection and scoring engines, and Generative AI** to transform technical signals into a structured Digital Analytics audit.
 
 > **Deterministic engines establish the evidence. AI transforms that evidence into an actionable audit report.**
 
 ---
 
-# 🌍 Live Application
+## 🌍 Live Application
 
 AIP is deployed on Vercel:
 
@@ -20,85 +20,79 @@ AIP is deployed on Vercel:
 
 ---
 
-# 🎯 Why AIP?
+## 🎯 Project Goal
 
-Digital Analytics audits are often time-consuming and fragmented.
+Digital Analytics audits often require analysts to manually inspect multiple technical layers:
 
-During a traditional pre-audit, an analyst may need to:
-
-- inspect the website source code;
-- identify Analytics technologies;
-- detect Tag Management Systems;
-- inspect Consent Management Platforms;
-- identify advertising pixels;
-- analyze DataLayer implementations;
-- evaluate data quality;
-- interpret technical findings;
-- prioritize issues;
-- produce recommendations.
-
-Modern tracking architectures make this even more complex because technologies can be loaded through:
-
-- Google Tag Manager;
-- Adobe Experience Platform Launch;
+- website source code;
+- analytics implementations;
+- Tag Management Systems;
 - Consent Management Platforms;
-- JavaScript runtime execution;
-- server-side tracking;
-- reverse proxies;
-- CDN infrastructure;
-- dynamic consent mechanisms.
+- advertising pixels;
+- DataLayer structures;
+- JavaScript runtime behavior;
+- network requests;
+- dynamically loaded tags;
+- tracking identifiers;
+- data quality and implementation maturity.
 
-AIP was created to automate a significant part of this first audit phase.
+Modern tracking architectures make this increasingly complex because technologies may be loaded dynamically through GTM, CMPs, JavaScript execution, consent mechanisms or other runtime processes.
+
+AIP automates a significant part of this technical pre-audit workflow.
 
 ---
 
-# 💡 The AIP Solution
+## 💡 How AIP Works
 
-AIP transforms a website URL into a structured Digital Analytics audit.
+AIP V3.1 combines **static analysis and browser-based dynamic analysis**.
 
 ```text
 Website URL
      │
-     ▼
-HTML Fetcher
-     │
-     ▼
-Detection Engine
-     │
-     ▼
-Knowledge Engine
-     │
-     ▼
-Scoring Engine
-     │
-     ▼
-AI Report Engine
-     │
-     ▼
-Structured Digital Analytics Audit
+     ├──────────────────────┐
+     │                      │
+     ▼                      ▼
+Static Analysis       Browser Engine
+HTML / Scripts      Playwright + Chromium
+     │                      │
+     │               ┌──────┼───────────┐
+     │               ▼      ▼           ▼
+     │          Rendered   Network    Runtime
+     │             DOM     Requests   Signals
+     │                                DataLayer
+     │               └──────┬───────────┘
+     │                      │
+     └──────────┬───────────┘
+                ▼
+          Evidence Fusion
+                │
+                ▼
+         Detection Engine
+                │
+                ▼
+         Knowledge Engine
+                │
+                ▼
+          Scoring Engine
+                │
+                ▼
+          AI Report Engine
+                │
+                ▼
+       Structured Audit
 ```
 
-Each engine has a clearly defined responsibility.
+This architecture separates **technical evidence collection** from **AI interpretation**.
 
-This architecture prevents the AI layer from becoming responsible for technical detection or scoring.
-
-The Detection Engine establishes technical evidence.
-
-The Knowledge Engine interprets relationships between detected technologies.
-
-The Scoring Engine evaluates the implementation using deterministic rules.
-
-Finally, the AI Report Engine transforms the structured audit data into a professional report.
+The AI model does not decide whether a technology exists and does not calculate the audit score.
 
 ---
 
-# ✨ Key Features
+# ✨ Key Capabilities
 
-## 🔍 Technology Detection
+## 🔍 Static Technology Detection
 
-AIP analyzes website technical signals to identify supported Digital Analytics, Tag Management, Consent and Marketing technologies.
-
-Current detection capabilities include technologies and signals such as:
+AIP analyzes HTML, scripts and observable technical signals to detect supported Digital Analytics technologies.
 
 ### Analytics
 
@@ -119,7 +113,7 @@ Current detection capabilities include technologies and signals such as:
 - OneTrust
 - Axeptio
 - Cookiebot
-- supported generic consent signals
+- generic consent signals
 
 ### Advertising & Marketing
 
@@ -136,24 +130,144 @@ Current detection capabilities include technologies and signals such as:
 - e-commerce structures
 - consent signals
 
-Each technology detection can contain:
+Detection results can include:
 
-- technology name;
+- technology;
 - vendor;
 - category;
 - detected identifiers;
 - technical evidence;
-- detection sources;
+- detection source;
 - confidence level;
 - implementation details.
 
 ---
 
+# 🌐 Playwright Browser Engine — V3.1
+
+AIP V3.1 introduces a **real browser analysis layer powered by Playwright and Chromium**.
+
+Static HTML inspection alone cannot reliably observe technologies that appear only after JavaScript execution.
+
+The Browser Engine allows AIP to inspect the website after runtime execution.
+
+It can collect evidence from:
+
+- rendered DOM;
+- dynamically loaded scripts;
+- browser network activity;
+- JavaScript runtime;
+- DataLayer;
+- runtime variables;
+- analytics identifiers;
+- dynamically loaded technologies.
+
+This significantly increases detection coverage compared with static-only analysis.
+
+---
+
+## 🔎 Dynamic Evidence Engine
+
+Runtime signals collected by the Browser Engine are transformed into structured evidence.
+
+AIP can analyze:
+
+```text
+Rendered DOM
+     +
+Loaded Scripts
+     +
+Network Requests
+     +
+Runtime Variables
+     +
+DataLayer
+     +
+Analytics Identifiers
+```
+
+Dynamic evidence is then normalized before being sent to the Detection Engine.
+
+---
+
+## 🔄 Static + Dynamic Evidence Fusion
+
+AIP combines static and runtime evidence instead of treating them as separate audits.
+
+```text
+Static Evidence
+       +
+Dynamic Evidence
+       ↓
+Evidence Fusion
+       ↓
+Deduplication
+       ↓
+Detection Engine
+```
+
+Duplicate technologies and identifiers are merged to produce a unified detection result.
+
+This allows AIP to preserve the speed and deterministic nature of static analysis while gaining deeper runtime visibility.
+
+---
+
+# 🛡️ Browser Security
+
+Running a browser against user-provided URLs introduces security risks.
+
+AIP V3.1 therefore includes SSRF protection for browser-based analysis.
+
+The security layer prevents access to:
+
+- localhost;
+- private IP addresses;
+- internal network ranges;
+- unsafe DNS resolutions;
+- prohibited redirects;
+- unsafe browser subrequests.
+
+Browser navigation and network activity are validated before requests are allowed.
+
+This makes the Browser Engine more suitable for controlled server-side execution.
+
+---
+
+# 🔁 Resilient Audit Pipeline
+
+Browser automation can fail because of:
+
+- Chromium startup problems;
+- website protections;
+- network errors;
+- timeouts;
+- browser incompatibilities.
+
+AIP therefore implements automatic fallback behavior.
+
+```text
+Browser Engine available
+        │
+       YES
+        ↓
+Static + Dynamic Audit
+
+Browser Engine unavailable
+        │
+       YES
+        ↓
+Static V2 Audit
+```
+
+A Chromium failure does not automatically prevent AIP from producing an audit.
+
+---
+
 # 🧠 Knowledge Engine
 
-Technology detection alone is not enough to perform a Digital Analytics audit.
+Technology detection alone is not sufficient for a Digital Analytics audit.
 
-The **Knowledge Engine** applies deterministic Digital Analytics rules to the results produced by the Detection Engine.
+The **Knowledge Engine** applies deterministic Digital Analytics rules to detected evidence.
 
 It can identify situations such as:
 
@@ -162,9 +276,8 @@ It can identify situations such as:
 - GTM detected without an identifiable DataLayer;
 - multiple Tag Management Systems;
 - multiple GTM containers;
-- Consent Management Platforms requiring additional verification;
 - advertising technologies without an identifiable CMP;
-- no supported technology confirmed by static analysis.
+- implementations requiring additional verification.
 
 Example:
 
@@ -177,16 +290,16 @@ Knowledge Engine
         ↓
 GA4 may be configured through GTM
         ↓
-Runtime verification recommended
+Runtime verification
 ```
 
-The objective is to distinguish **technical facts** from **audit interpretation**.
+V3.1 can now perform part of that runtime verification directly through the Browser Engine.
 
 ---
 
-# 📊 Scoring Engine
+# 📊 Deterministic Scoring Engine
 
-AIP evaluates the observed Digital Analytics implementation across five categories.
+AIP evaluates Digital Analytics maturity across five categories.
 
 | Category | Maximum Score |
 |---|---:|
@@ -199,19 +312,17 @@ AIP evaluates the observed Digital Analytics implementation across five categori
 
 The scoring system is **deterministic and rule-based**.
 
-The AI model does not decide the score.
+The AI model does not calculate the score.
 
-This means that identical technical evidence produces consistent scoring results.
-
-AIP also assigns a global grade based on the resulting score.
+Identical evidence therefore produces consistent scoring results.
 
 ---
 
-# 🗂️ DataLayer Analysis
+# 🗂️ DataLayer Intelligence
 
-AIP goes beyond simple technology detection by analyzing available DataLayer signals.
+AIP analyzes observable DataLayer structures and signals.
 
-The DataLayer detector can inspect:
+Supported analysis includes:
 
 - `window.dataLayer`;
 - `dataLayer.push()`;
@@ -221,31 +332,28 @@ The DataLayer detector can inspect:
 - user variables;
 - commerce variables;
 - e-commerce structures;
-- form variables;
-- search variables;
+- forms;
+- search signals;
 - consent-related signals.
 
-Example variable categories:
+Example:
 
 ```text
 Navigation
 ├── page_name
 ├── page_type
 ├── page_category
-├── page_location
-└── page_referrer
+└── page_location
 
 User
 ├── user_id
 ├── user_status
-├── login_status
-└── customer_type
+└── login_status
 
 Commerce
 ├── currency
 ├── value
-├── transaction_id
-└── payment_type
+└── transaction_id
 
 E-commerce
 ├── ecommerce
@@ -256,51 +364,41 @@ E-commerce
 └── price
 ```
 
-This provides a first level of evaluation of the site's measurement architecture and data quality.
+V3.1 can inspect both statically observable DataLayer evidence and runtime DataLayer state.
 
 ---
 
 # 🤖 AI Report Engine
 
-Once detection, knowledge analysis and scoring are complete, the **AI Report Engine** transforms the structured audit into a professional report.
+After evidence collection, detection, knowledge analysis and scoring, the **AI Report Engine** transforms structured findings into a professional audit.
 
-The report contains:
+Reports can include:
 
-- Executive Summary
-- Strengths
-- Weaknesses
-- Recommendations
-- Priority Actions
-- Technical Analysis
+- Executive Summary;
+- Strengths;
+- Weaknesses;
+- Recommendations;
+- Priority Actions;
+- Technical Analysis.
 
 Reports can currently be generated in:
 
 - 🇫🇷 French
 - 🇬🇧 English
 
-The AI layer receives structured information produced by the previous engines and is instructed to remain grounded in the available evidence.
+The AI receives structured evidence generated by the previous engines.
 
-The AI is not responsible for calculating the score.
+It is not responsible for technology detection or scoring.
 
 ---
 
 # ⚠️ Evidence-Based Detection
 
-One of the core principles of AIP is:
+One of AIP's core principles is:
 
 > **Not detected does not mean absent.**
 
-Modern Analytics technologies may not be visible in the initial HTML because they can be:
-
-- deployed through a Tag Management System;
-- loaded after user consent;
-- executed dynamically in the browser;
-- implemented server-side;
-- routed through reverse proxies;
-- loaded through first-party endpoints;
-- protected by CDN or anti-bot systems.
-
-AIP therefore distinguishes between:
+AIP distinguishes between:
 
 ```text
 Technology confirmed
@@ -310,107 +408,111 @@ Technology not detected
 Technology confirmed absent
 ```
 
-When technical evidence is insufficient, AIP recommends additional runtime or manual verification instead of automatically concluding that a technology is absent.
+Even browser-based analysis cannot guarantee complete visibility.
+
+Technologies may depend on:
+
+- specific consent interactions;
+- authentication;
+- particular user journeys;
+- server-side tracking;
+- first-party proxy architectures;
+- geographic conditions;
+- anti-bot protections.
+
+When evidence is insufficient, AIP communicates uncertainty rather than inventing a conclusion.
 
 ---
 
-# 🏗️ AIP V2 Architecture
+# 🧪 Static vs Dynamic Analysis — Real Validation Case
 
-AIP V2 introduces a modular architecture where each responsibility is isolated.
+The Browser Engine was validated against real-world analytics implementations.
+
+One representative test demonstrated the difference between static-only and runtime analysis.
+
+### Static analysis
 
 ```text
-                         AIP V2
-                Analytics Intelligence Platform
-
-                              │
-                              ▼
-                       Website URL
-                              │
-                              ▼
-                       HTML Fetcher
-                              │
-                              ▼
-                    Detection Engine
-                              │
-              ┌───────────────┴───────────────┐
-              │                               │
-              ▼                               ▼
-      Technology Detection              Raw Signals
-              │                               │
-              └───────────────┬───────────────┘
-                              │
-                              ▼
-                     Knowledge Engine
-                              │
-                              ▼
-                      Scoring Engine
-                              │
-                              ▼
-                     AI Report Engine
-                              │
-                              ▼
-                   Structured Audit API
-                              │
-                              ▼
-                       Audit Interface
+DataLayer detected
+Global score: 5/100
 ```
+
+### V3.1 browser analysis
+
+```text
+DataLayer
++
+Google Tag Manager
++
+Google Analytics 4
++
+Floodlight
+
+5 GTM containers detected
+3 GA4 identifiers detected
+```
+
+The test demonstrates why runtime inspection is important for modern analytics architectures.
+
+Technologies configured through tag managers or dynamically loaded scripts may not be observable from initial HTML alone.
 
 ---
 
-# ⚙️ Detection Engine
+# 🏗️ AIP V3.1 Architecture
 
-The Detection Engine is responsible for identifying technologies from observable technical signals.
+```text
+                    AIP V3.1
+          Analytics Intelligence Platform
 
-Each detector is independent and focuses on a specific technology or technical family.
-
-A typical detection result contains:
-
-```json
-{
-  "name": "Google Analytics 4",
-  "key": "ga4",
-  "vendor": "Google",
-  "category": "Analytics",
-  "present": true,
-  "status": "Détecté directement",
-  "ids": ["G-XXXXXXXXXX"],
-  "evidence": ["gtag/js", "G-XXXXXXXXXX"],
-  "sources": ["HTML statique"],
-  "certainty": "Élevé"
-}
+                         │
+                         ▼
+                   Website URL
+                         │
+              ┌──────────┴──────────┐
+              ▼                     ▼
+        HTML Fetcher          Browser Engine
+                                  │
+                              Playwright
+                                  │
+                               Chromium
+                                  │
+                       ┌──────────┼──────────┐
+                       ▼          ▼          ▼
+                     DOM       Network    Runtime
+                                             │
+                                         DataLayer
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                  Evidence Engine
+                         │
+                         ▼
+                  Detection Engine
+                         │
+                         ▼
+                  Knowledge Engine
+                         │
+                         ▼
+                   Scoring Engine
+                         │
+                         ▼
+                  AI Report Engine
+                         │
+                         ▼
+                   Audit Interface
 ```
-
-This structured format allows other engines to consume detection results without performing technology detection themselves.
-
----
-
-# 🌐 HTML Fetcher
-
-AIP uses a centralized HTML Fetcher before executing the Detection Engine.
-
-Its responsibilities include:
-
-- retrieving website HTML;
-- following redirects;
-- managing request timeout;
-- collecting HTTP status information;
-- recording the final URL;
-- exposing useful diagnostic information;
-- providing the HTML to the Detection Engine.
-
-Centralizing this logic prevents multiple parts of the application from implementing different fetch strategies.
 
 ---
 
 # 🔌 API
 
-The main audit endpoint is:
+Main audit endpoint:
 
 ```text
 POST /api/agent
 ```
 
-Example request:
+Example:
 
 ```bash
 curl -X POST http://localhost:3000/api/agent \
@@ -421,168 +523,81 @@ curl -X POST http://localhost:3000/api/agent \
   }'
 ```
 
-A successful audit can return:
-
-```json
-{
-  "success": true,
-  "url": "https://example.com",
-  "generatedAt": "2026-07-27T00:00:00.000Z",
-  "executionTime": 12000,
-  "detection": {},
-  "scoring": {},
-  "report": {}
-}
-```
-
-The response combines the results of the complete audit pipeline.
-
----
-
-# 🖥️ Product Interface
-
-AIP V2 introduces a redesigned SaaS-oriented interface.
-
-The landing page presents the platform separately from the audit workflow.
-
-Main product sections include:
-
-```text
-Navbar
-   │
-   ▼
-Hero
-   │
-   ▼
-Product / Dashboard Preview
-   │
-   ▼
-Features
-   │
-   ▼
-How It Works
-   │
-   ▼
-Start Audit
-```
-
-The audit workflow is accessible through a dedicated audit interface.
+The API orchestrates the complete audit pipeline.
 
 ---
 
 # 📸 Product Preview
 
-Screenshots of the AIP V2 interface can be added here.
+## Audit Interface
 
-## Landing Page
-
-```text
-[ AIP V2 Landing Page Screenshot ]
-```
-
-## Audit Dashboard
-
-```text
-[ AIP Audit Dashboard Screenshot ]
-```
+> Screenshot to be added.
 
 ## Detection & Scoring
 
-```text
-[ AIP Detection / Scoring Screenshot ]
-```
+> Screenshot to be added.
 
 ---
 
 # 🧪 Quality Assurance
 
-Before the V2 Release Candidate, AIP was tested against several real-world websites representing different Analytics architectures.
+AIP has been tested against multiple real-world websites representing different Analytics architectures.
 
-The QA campaign covered scenarios including:
+QA scenarios include:
 
 - Google Tag Manager;
-- direct Google Analytics 4 implementation;
+- Google Analytics 4;
 - Adobe Analytics;
-- Consent Management Platforms;
 - DataLayer implementations;
+- Consent Management Platforms;
 - advertising pixels;
-- websites with limited detectable signals;
-- websites protected by anti-bot infrastructure.
+- Floodlight;
+- dynamically loaded technologies;
+- websites with limited static evidence;
+- anti-bot infrastructure.
 
-The campaign validated the main V2 pipeline:
+V3.1 additionally validates:
 
-```text
-HTML Fetch
-    ↓
-Technology Detection
-    ↓
-Knowledge Rules
-    ↓
-Scoring
-    ↓
-AI Report
-```
-
-Representative tests successfully validated detection scenarios involving:
-
-- GTM;
-- GA4;
-- Adobe Analytics / AppMeasurement;
-- Cookiebot;
-- Didomi;
-- DataLayer;
-- Meta Pixel;
-- Floodlight.
-
-The QA campaign also helped identify product limitations and future improvements.
+- Chromium execution;
+- rendered DOM capture;
+- network inspection;
+- runtime evidence;
+- DataLayer runtime inspection;
+- static/dynamic evidence fusion;
+- fallback behavior;
+- SSRF protections.
 
 ---
 
-# ⚠️ Known Limitations
+# ⚠️ Current Limitations
 
-AIP V2 primarily performs **static HTML analysis**.
+AIP V3.1 provides significantly deeper visibility than static-only analysis, but it remains an automated technical pre-audit.
 
-This provides fast and deterministic analysis but introduces several limitations.
+### Consent interactions
 
-## Dynamic JavaScript
+Some technologies require specific consent actions before loading.
 
-Technologies loaded only after browser-side JavaScript execution may not be visible.
+### Complex user journeys
 
-## Consent-Dependent Tracking
+Tags triggered only after login, checkout, forms or specific navigation paths may require scenario-based browser automation.
 
-Analytics or marketing tags may only load after the user accepts specific consent categories.
+### Server-side tracking
 
-## Tag Management Systems
+Server-side or proxy-based implementations may expose limited browser evidence.
 
-A technology configured inside GTM or another Tag Management System may not appear directly in the initial HTML.
+### Anti-bot protection
 
-## Server-Side Tracking
+Some websites can restrict automated browser execution.
 
-Server-side or proxy-based implementations may not expose recognizable client-side signals.
+### Technology coverage
 
-## Anti-Bot Protection
+AIP can formally identify technologies currently supported by its Detection Engine.
 
-Some websites protected by systems such as Cloudflare may reject automated HTTP requests.
-
-In these situations, AIP can receive responses such as:
-
-```text
-HTTP 403 Forbidden
-```
-
-This is considered an external access limitation rather than proof that the audited website does not contain Analytics technologies.
-
-## Technology Coverage
-
-AIP can only formally detect technologies currently supported by its Detection Engine.
-
-Additional technologies and CMPs will progressively be added.
+These limitations are treated as **uncertainty**, not proof of absence.
 
 ---
 
 # 🛠️ Tech Stack
-
-AIP is currently built with:
 
 ### Frontend
 
@@ -590,25 +605,32 @@ AIP is currently built with:
 - React
 - TypeScript
 - Tailwind CSS
-- Lucide React
-- React Circular Progressbar
 
-### Backend / Application
+### Analytics Engine
 
-- Next.js API Routes
-- TypeScript
-- Node.js
+- Modular Detection Engine
+- Dynamic Evidence Engine
+- Knowledge Engine
+- Deterministic Scoring Engine
+- DataLayer Analysis
+
+### Browser Automation
+
+- Playwright
+- Chromium
+- Network inspection
+- Runtime JavaScript analysis
 
 ### Artificial Intelligence
 
 - OpenAI API
 
-### Architecture
+### Security
 
-- Modular Detection Engine
-- Rule-Based Knowledge Engine
-- Deterministic Scoring Engine
-- AI Report Engine
+- SSRF protection
+- DNS validation
+- redirect validation
+- private-network blocking
 
 ### Development & Deployment
 
@@ -620,25 +642,16 @@ AIP is currently built with:
 
 # 📂 Project Structure
 
-A simplified representation of the AIP V2 project:
-
 ```text
 agent-ia/
 │
 ├── app/
 │   ├── api/
 │   │   └── agent/
-│   │
 │   ├── audit/
-│   │   └── page.tsx
-│   │
-│   ├── globals.css
-│   ├── layout.tsx
 │   └── page.tsx
 │
 ├── components/
-│   ├── home/
-│   └── layout/
 │
 ├── lib/
 │   ├── detectors/
@@ -646,33 +659,28 @@ agent-ia/
 │   ├── scoring/
 │   ├── report/
 │   ├── orchestrator/
-│   ├── ai/
-│   ├── html-fetcher.ts
-│   └── types.ts
+│   ├── browser/
+│   ├── security/
+│   └── ai/
 │
 ├── docs/
-│
 ├── public/
-│
 ├── package.json
 └── README.md
 ```
+
+The exact internal structure may evolve as the Browser Engine is consolidated.
 
 ---
 
 # 🚀 Local Development
 
-## 1. Clone the repository
+## 1. Clone
 
 ```bash
 git clone https://github.com/Bricegoye/agent-ia.git
-```
-
-```bash
 cd agent-ia
 ```
-
----
 
 ## 2. Install dependencies
 
@@ -680,9 +688,9 @@ cd agent-ia
 npm install
 ```
 
----
+Playwright/Chromium dependencies may also be required for browser-based analysis.
 
-## 3. Configure environment variables
+## 3. Environment
 
 Create:
 
@@ -690,19 +698,11 @@ Create:
 .env.local
 ```
 
-Add the required environment variables.
+Configure the required environment variables, including the OpenAI API key where applicable.
 
-Example:
+Never commit API keys or secrets.
 
-```env
-OPENAI_API_KEY=your_openai_api_key
-```
-
-Never commit API keys or secrets to GitHub.
-
----
-
-## 4. Start the development server
+## 4. Development
 
 ```bash
 npm run dev
@@ -714,37 +714,23 @@ Open:
 http://localhost:3000
 ```
 
-The audit interface is available at:
+Audit interface:
 
 ```text
 http://localhost:3000/audit
 ```
 
----
-
-## 5. Production build
-
-Before deployment:
+## 5. Production validation
 
 ```bash
 npm run build
 ```
 
-A successful build validates the Next.js production compilation and TypeScript checks.
-
 ---
 
 # 🧬 Project Evolution
 
-AIP started as a simple experiment around automated Digital Analytics auditing.
-
-The architecture has progressively evolved from a proof of concept into a modular Analytics Intelligence Platform.
-
----
-
 ## ✅ V1 — Proof of Concept
-
-The first version validated the core idea:
 
 ```text
 URL
@@ -758,24 +744,13 @@ OpenAI
 Audit
 ```
 
-V1 introduced:
-
-- URL analysis;
-- HTML fetching;
-- initial Analytics technology detection;
-- OpenAI-generated audit;
-- Next.js interface;
-- Vercel deployment.
-
-The objective of V1 was primarily to validate the product concept.
+Validated the initial concept of automated Digital Analytics auditing.
 
 ---
 
 ## ✅ V2 — Analytics Intelligence Engine
 
-V2 represents a major architectural evolution.
-
-Instead of sending basic website information directly to an AI model, AIP now uses several specialized engines.
+Introduced the deterministic intelligence architecture:
 
 ```text
 Detection
@@ -787,98 +762,91 @@ Scoring
 AI Reporting
 ```
 
-V2 introduces:
+Major additions:
 
-- modular technology detectors;
-- structured detection results;
-- confidence levels;
-- technical evidence;
+- modular detectors;
+- structured technical evidence;
 - Knowledge Engine;
 - deterministic scoring;
-- advanced DataLayer analysis;
-- Analytics / Tag Management / Consent / Marketing categories;
+- DataLayer analysis;
 - AI Report Engine;
-- French and English reports;
+- FR/EN reports;
 - centralized HTML Fetcher;
-- improved error diagnostics;
-- dedicated audit interface;
-- redesigned SaaS landing page;
-- real-world QA campaign.
+- redesigned audit interface;
+- real-world QA.
+
+---
+
+## 🚧 V3.1 — Browser Intelligence Engine
+
+Introduces runtime website inspection.
+
+### Implemented
+
+- Playwright 1.62.1;
+- Chromium browser execution;
+- rendered DOM analysis;
+- dynamic script inspection;
+- network request inspection;
+- request status tracking;
+- runtime JavaScript signals;
+- runtime DataLayer inspection;
+- Dynamic Evidence Engine;
+- static + dynamic evidence fusion;
+- deduplication;
+- integration with Detection Engine;
+- automatic V2 fallback;
+- SSRF protection;
+- DNS/private-network protection;
+- redirect and browser-subrequest protection.
+
+V3.1 transforms AIP from a primarily static analyzer into a **hybrid static + browser-based Analytics Intelligence Platform**.
 
 ---
 
 # 🔮 Roadmap
 
-## 🔜 V2.1 — Runtime Detection & UI Refinements
+## V3.x — Browser Intelligence Expansion
 
-The next iteration will focus on increasing detection coverage and improving the user experience.
+Planned improvements include:
 
-Planned areas include:
+- deeper consent interaction scenarios;
+- multi-page browser journeys;
+- richer network classification;
+- enhanced runtime DataLayer intelligence;
+- additional analytics/CMP detection;
+- browser execution diagnostics.
 
-### Runtime Analysis
+## V4 — Advanced Audit Intelligence
 
-- Playwright integration;
-- browser-based analysis;
-- JavaScript runtime inspection;
-- network request analysis;
-- runtime DataLayer inspection;
-- dynamically loaded tag detection;
-- consent-dependent tag analysis.
-
-### Detection Coverage
-
-Additional support may include:
-
-- TarteAuCitron;
-- Real Cookie Banner;
-- additional CMPs;
-- enhanced Matomo detection;
-- additional Analytics and Marketing technologies.
-
-### DataLayer Intelligence
-
-- richer event classification;
-- business event analysis;
-- e-commerce validation;
-- variable coverage;
-- data quality diagnostics.
-
-### UI / UX
-
-- responsive improvements;
-- mobile optimization;
-- audit experience refinements;
-- clearer error and limitation messages.
-
----
-
-## 🔮 V3 — Advanced Audit & Reporting
-
-Future product capabilities may include:
+Potential capabilities:
 
 - audit history;
 - audit comparison;
-- advanced Analytics maturity scoring;
-- PDF report generation;
-- PowerPoint export;
+- advanced maturity scoring;
 - tagging plan generation;
-- advanced recommendations;
-- project / client audit management;
-- extended governance analysis.
+- PDF audit reports;
+- client/project management;
+- governance analysis;
+- advanced recommendations.
 
 ---
 
 # 🌟 Long-Term Vision
 
-The long-term objective of AIP is to allow a Digital Analytics professional to enter:
+The objective is to allow a Digital Analytics professional to enter:
 
 ```text
 https://www.client.com
 ```
 
-and obtain a structured audit containing:
+and obtain:
 
 ```text
+Static Analysis
+        +
+Runtime Browser Analysis
+        +
 Technology Detection
         +
 Analytics Architecture
@@ -898,12 +866,12 @@ Prioritized Recommendations
 Professional Audit Report
 ```
 
-The objective is not to replace the Digital Analytics consultant.
+AIP is not designed to replace a Digital Analytics consultant.
 
-The objective is to automate repetitive technical pre-audit tasks so that analysts and consultants can spend more time on:
+It is designed to automate repetitive technical pre-audit work so analysts can focus on higher-value activities:
 
-- architecture;
 - measurement strategy;
+- analytics architecture;
 - data quality;
 - governance;
 - business requirements;
@@ -911,73 +879,63 @@ The objective is to automate repetitive technical pre-audit tasks so that analys
 
 ---
 
-# 💡 Engineering Philosophy
-
-AIP follows several principles.
+# 💡 Engineering Principles
 
 ### Evidence before assumptions
 
 Technical conclusions should be supported by observable evidence.
 
-### Deterministic logic before AI interpretation
+### Static + runtime evidence
+
+Modern analytics implementations require both source-level and browser-level inspection.
+
+### Deterministic logic before AI
 
 Detection and scoring should remain predictable and testable.
 
 ### AI as an intelligence layer
 
-Generative AI is used to interpret structured findings and communicate them effectively, not to replace the technical detection engines.
+Generative AI interprets structured findings rather than inventing technical evidence.
 
 ### Explicit uncertainty
 
-When AIP cannot prove something, the platform should communicate uncertainty rather than invent a conclusion.
+When AIP cannot prove something, it should communicate uncertainty.
 
-### Modular architecture
+### Security by design
 
-Each engine should remain independently maintainable and extensible.
+Browser automation must prevent access to unsafe or internal network resources.
 
----
+### Graceful degradation
 
-# 📚 Documentation
-
-Detailed technical documentation is maintained in the `/docs` directory.
-
-Planned documentation includes:
-
-```text
-docs/
-│
-├── architecture.md
-├── detection-engine.md
-├── knowledge-engine.md
-├── scoring-engine.md
-├── ai-report-engine.md
-├── api.md
-├── testing.md
-├── limitations.md
-└── roadmap.md
-```
-
-The README provides the product and architecture overview, while `/docs` contains deeper technical documentation.
+Failure of the Browser Engine should not automatically prevent the static audit from running.
 
 ---
 
 # 📌 Project Status
 
 ```text
-AIP V1                     ✅ Completed
+AIP V1 — Proof of Concept                 ✅
 
-AIP V2
-├── Detection Engine       ✅
-├── Knowledge Engine       ✅
-├── Scoring Engine         ✅
-├── AI Report Engine       ✅
-├── Audit API              ✅
-├── Landing Page           ✅
-├── Audit Interface        ✅
-├── QA Campaign            ✅
-└── Release Candidate      ✅
+AIP V2 — Analytics Intelligence Engine
+├── Detection Engine                      ✅
+├── Knowledge Engine                      ✅
+├── Scoring Engine                        ✅
+├── DataLayer Analysis                    ✅
+├── AI Report Engine                      ✅
+└── Audit Interface                       ✅
 
-AIP V2.1                   🔜 Planned
+AIP V3.1 — Browser Intelligence Engine
+├── Playwright / Chromium                 ✅
+├── Rendered DOM                          ✅
+├── Network Inspection                    ✅
+├── Runtime Signals                       ✅
+├── Dynamic DataLayer                     ✅
+├── Dynamic Evidence Engine               ✅
+├── Static + Dynamic Fusion               ✅
+├── V2 Automatic Fallback                 ✅
+└── SSRF / Network Protection             ✅
+
+Advanced Browser Intelligence             🚧
 ```
 
 ---
@@ -991,17 +949,13 @@ AIP V2.1                   🔜 Planned
 AIP is a personal engineering project exploring the intersection of:
 
 - Digital Analytics;
-- Analytics engineering;
+- Analytics Engineering;
+- browser automation;
 - automated auditing;
-- rule-based systems;
 - data quality;
+- deterministic rule systems;
 - Generative AI;
-- modern web application development.
-
-The project was designed both as a practical Digital Analytics tool and as an exploration of how deterministic analytics engineering can be combined with Generative AI.
+- modern web engineering.
 
 ---
 
-# 📄 License
-
-MIT
