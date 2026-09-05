@@ -434,6 +434,7 @@ One representative test demonstrated the difference between static-only and runt
 
 ```text
 DataLayer detected
+
 Global score: 5/100
 ```
 
@@ -463,7 +464,6 @@ Technologies configured through tag managers or dynamically loaded scripts may n
 ```text
                     AIP V3.1
           Analytics Intelligence Platform
-
                          │
                          ▼
                    Website URL
@@ -529,13 +529,19 @@ The API orchestrates the complete audit pipeline.
 
 # 📸 Product Preview
 
-## Audit Interface
+## AIP Interface
 
-> Screenshot to be added.
+AIP provides a simple interface allowing a user to launch a Digital Analytics audit from a website URL.
+
+![AIP Analytics Intelligence Platform](docs/screenshots/aip-home.png)
 
 ## Detection & Scoring
 
-> Screenshot to be added.
+Example of a Digital Analytics audit performed on Peugeot France using the AIP V3.1 Browser Intelligence Engine.
+
+The runtime analysis detects technologies and identifiers that may not be observable through static HTML analysis alone.
+
+![AIP Audit Peugeot France](docs/screenshots/aip-audit-peugeot.png)
 
 ---
 
@@ -664,6 +670,10 @@ agent-ia/
 │   └── ai/
 │
 ├── docs/
+│   └── screenshots/
+│       ├── aip-home.png
+│       └── aip-audit-peugeot.png
+│
 ├── public/
 ├── package.json
 └── README.md
@@ -958,4 +968,3 @@ AIP is a personal engineering project exploring the intersection of:
 - modern web engineering.
 
 ---
-
